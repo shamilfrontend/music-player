@@ -1,8 +1,2 @@
+node_modules
 .idea
-.DS_Store
-client/node_modules
-server/node_modules
-server/yarn.lock
-server/package-lock.json
-server/yarn-error.log
-oldplayer

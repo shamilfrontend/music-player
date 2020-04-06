@@ -1,30 +1,35 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const morgan = require('morgan');
+const express = require('express')
+const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
 
 // init app
-const app = express();
+const app = express()
 
-// setting bodyParser
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
-app.use(bodyParser.json());
+// http body settings
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
+app.use(bodyParser.json({ limit: '50mb' }))
 
-// setting cors
-app.use(cors());
+// routes
+const userRoutes = require('./routes/user.routes')
+const musicRoutes = require('./routes/music.routes')
 
-// setting morgan
-app.use(morgan('dev'));
+// router init
+app.use('/api/v1/user', userRoutes)
+app.use('/api/v1/customer', musicRoutes)
 
-// static
-app.use('/static', express.static('static'));
+// DB connect
+mongoose
+  .connect(
+    'mongodb://shamilfrontend:shamilfrontend123@ds046677.mlab.com:46677/music-vue',
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true
+    }
+  )
+  // eslint-disable-next-line no-console
+  .then(() => console.log('Database connected!'))
+  // eslint-disable-next-line no-console
+  .catch((error) => console.error(error))
 
-// routes API
-const musicsRouter = require('./routes/musics');
-
-app.use('/api/musics', musicsRouter);
-
-// export app
-module.exports = app;
+module.exports = app
