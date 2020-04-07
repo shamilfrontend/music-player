@@ -15,7 +15,7 @@ const musicRoutes = require('./routes/music.routes')
 
 // router init
 app.use('/api/v1/user', userRoutes)
-app.use('/api/v1/customer', musicRoutes)
+app.use('/api/v1/music', musicRoutes)
 
 // DB connect
 mongoose
