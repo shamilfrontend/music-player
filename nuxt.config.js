@@ -34,7 +34,7 @@ module.exports = {
 
   css: ['normalize.css/normalize.css'],
 
-  plugins: ['@/plugins/globals'],
+  plugins: [],
 
   buildModules: ['@nuxtjs/eslint-module'],
 
