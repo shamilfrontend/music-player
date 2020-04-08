@@ -17,15 +17,13 @@ const musicRoutes = require('./routes/music.routes')
 app.use('/api/v1/user', userRoutes)
 app.use('/api/v1/music', musicRoutes)
 
-const MONGO_DB_URL_PROD =
-  'mongodb://shamilalisultanov:shamilfrontend321@ds016118.mlab.com:16118/music-player-prod'
-// const MONGO_DB_URL_DEV =
-//  'mongodb://shamilfrontend:shamilfrontend123@ds056559.mlab.com:56559/music-player-dev'
-// const MONGO_DB_URL = process.env.MONGO_DB_URL_PROD || MONGO_DB_URL_DEV
+const MONGO_DB_URL_DEV =
+  'mongodb://shamilfrontend:shamilfrontend123@ds056559.mlab.com:56559/music-player-dev'
+const MONGO_DB_URL = process.env.MONGO_DB_URL_PROD || MONGO_DB_URL_DEV
 
 // DB connect
 mongoose
-  .connect(MONGO_DB_URL_PROD, {
+  .connect(MONGO_DB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
