@@ -30,7 +30,7 @@ module.exports = {
     color: '#1160de'
   },
 
-  css: ['normalize.css/normalize.css'],
+  css: ['normalize.css/normalize.css', './assets/styles/base.css'],
 
   plugins: [],
 
