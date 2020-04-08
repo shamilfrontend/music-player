@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`indexPage should match snapshot 1`] = `
+<div class="container">
+  <h1>Music player</h1>
+  <p>Скоро будет...</p>
+</div>
+`;

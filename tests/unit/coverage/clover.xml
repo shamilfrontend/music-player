@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1586271242230" clover="3.2.0">
-  <project timestamp="1586271242230" name="All files">
-    <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0" elements="0" coveredelements="0" complexity="0" loc="0" ncloc="0" packages="0" files="0" classes="0"/>
+<coverage generated="1586342723518" clover="3.2.0">
+  <project timestamp="1586342723518" name="All files">
+    <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="4" elements="8" coveredelements="8" complexity="0" loc="4" ncloc="4" packages="4" files="4" classes="4"/>
+    <package name="layouts">
+      <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="default.vue" path="/Users/sh.alisultanov/Desktop/Projects/github/music-player/layouts/default.vue">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="6" type="stmt"/>
+      </file>
+    </package>
+    <package name="pages">
+      <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="index.vue" path="/Users/sh.alisultanov/Desktop/Projects/github/music-player/pages/index.vue">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="6" type="stmt"/>
+      </file>
+    </package>
+    <package name="pages.signin">
+      <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="index.vue" path="/Users/sh.alisultanov/Desktop/Projects/github/music-player/pages/signin/index.vue">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="6" type="stmt"/>
+      </file>
+    </package>
+    <package name="pages.signout">
+      <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="index.vue" path="/Users/sh.alisultanov/Desktop/Projects/github/music-player/pages/signout/index.vue">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="6" type="stmt"/>
+      </file>
+    </package>
   </project>
 </coverage>

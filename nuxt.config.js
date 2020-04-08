@@ -1,6 +1,4 @@
 module.exports = {
-  srcDir: 'client/',
-
   mode: 'universal',
 
   head: {
@@ -29,7 +27,7 @@ module.exports = {
   },
 
   loading: {
-    color: '#ff493d'
+    color: '#1160de'
   },
 
   css: ['normalize.css/normalize.css'],
@@ -38,7 +36,7 @@ module.exports = {
 
   buildModules: ['@nuxtjs/eslint-module'],
 
-  modules: ['@nuxtjs/axios', '@nuxtjs/pwa', '@nuxtjs/dotenv'],
+  modules: ['@nuxtjs/axios', '@nuxtjs/pwa'],
 
   axios: {
     baseURL: process.env.BASE_URL || 'http://localhost:3000'

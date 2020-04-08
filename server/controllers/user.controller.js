@@ -4,7 +4,7 @@ const { validationResult } = require('express-validator')
 
 const User = require('../models/user.model')
 
-const jwtSecret = 'shamil-music007'
+const jwtSecret = process.env.JWT_SECRET_KEY || 'shamil-music'
 
 const getAll = async (req, res) => {
   try {

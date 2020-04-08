@@ -1,6 +1,6 @@
 # music-player
 
-> my Music player
+> music player
 
 ## Build Setup
 
@@ -19,4 +19,13 @@ $ yarn start
 $ yarn generate
 ```
 
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+## Contributors
+
+<ul>
+    <li>
+        <a href="https://github.com/shamilfrontend" target="_blank">shamilfrontend</a>
+    </li>
+    <li>
+        <a href="https://github.com/raha-frontend" target="_blank">raha-frontend</a>
+    </li>
+</ul>
