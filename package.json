@@ -17,7 +17,7 @@
     "node": "12.x"
   },
   "lint-staged": {
-    "*.{js,vue}": "yarn lint"
+    "*.{js,vue}": "yarn lint --fix"
   },
   "husky": {
     "hooks": {
