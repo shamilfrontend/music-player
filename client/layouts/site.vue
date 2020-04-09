@@ -3,13 +3,22 @@
     <div class="header">
       <span class="header-name">Music Player</span>
     </div>
-    <nuxt />
+    <div class="content">
+      <nuxt />
+    </div>
+    <div class="copyright">© {{ currentYear }} Music-player</div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'SiteLayout'
+  name: 'SiteLayout',
+
+  data() {
+    return {
+      currentYear: new Date().getFullYear()
+    }
+  }
 }
 </script>
 
@@ -20,11 +29,24 @@ export default {
   margin-right: auto;
 }
 
-.header {
+.header,
+.copyright {
   padding: 10px;
   background-color: #4a76a8;
-  text-align: center;
   color: #ffffff;
+  text-align: center;
+}
+
+.header {
+  font-size: 28px;
+  line-height: 30px;
+}
+
+.content {
+  min-height: calc(100vh - 90px);
+}
+
+.copyright {
   font-size: 20px;
   line-height: 20px;
 }

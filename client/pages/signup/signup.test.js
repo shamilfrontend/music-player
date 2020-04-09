@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils'
 
 import Component from './index'
 
-describe('SignInPage', () => {
+describe('SignUpPage', () => {
   let instance
 
   beforeEach(() => {

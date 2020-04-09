@@ -2,11 +2,13 @@ import { shallowMount } from '@vue/test-utils'
 
 import Component from './index'
 
-describe('SignOutPage', () => {
+describe('SignInPage', () => {
   let instance
 
   beforeEach(() => {
-    instance = shallowMount(Component)
+    instance = shallowMount(Component, {
+      stubs: ['nuxt-link']
+    })
   })
 
   test('should match snapshot', () => {

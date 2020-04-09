@@ -13,7 +13,13 @@ const userSchema = new Schema({
   name: {
     type: String,
     required: true
-  }
+  },
+  musics: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'musics'
+    }
+  ]
 })
 
 module.exports = model('User', userSchema)

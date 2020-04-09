@@ -1,4 +1,6 @@
 module.exports = {
+  srcDir: 'client/',
+
   mode: 'universal',
 
   head: {
