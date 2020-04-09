@@ -1,8 +1,9 @@
 const Music = require('../models/music.model')
 
-const getAll = async (req, res) => {
+const getMusics = async (req, res) => {
   try {
     const musics = await Music.find()
+    // console.log('musics', musics)
     res.status(200).json(musics)
   } catch (e) {
     res.status(500).json({
@@ -11,23 +12,13 @@ const getAll = async (req, res) => {
   }
 }
 
-const getByUserId = async (req, res) => {
+const addMusic = async (req, res) => {
   try {
-    const musics = await Music.find()
-    res.status(200).json(musics)
-  } catch (e) {
-    res.status(500).json({
-      message: 'Что-то пошло не так'
-    })
-  }
-}
-
-const create = async (req, res) => {
-  try {
-    const { name } = req.body
-
     const music = new Music({
-      name
+      name: req.body.name,
+      author: req.body.author,
+      imageUrl: '/music-images' + req.file.imageUrl,
+      musicUrl: '/musics' + req.file.musicUrl
     })
 
     await music.save()
@@ -40,7 +31,7 @@ const create = async (req, res) => {
   }
 }
 
-const remove = async (req, res) => {
+const removeMusic = async (req, res) => {
   try {
     await Music.deleteOne({
       _id: req.params.id
@@ -55,4 +46,4 @@ const remove = async (req, res) => {
   }
 }
 
-module.exports = { getAll, getByUserId, create, remove }
+module.exports = { getMusics, addMusic, removeMusic }

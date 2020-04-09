@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1586344205326" clover="3.2.0">
-  <project timestamp="1586344205326" name="All files">
+<coverage generated="1586437559864" clover="3.2.0">
+  <project timestamp="1586437559864" name="All files">
     <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="4" elements="8" coveredelements="8" complexity="0" loc="4" ncloc="4" packages="4" files="4" classes="4"/>
     <package name="layouts">
       <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
@@ -23,9 +23,9 @@
         <line num="1" count="6" type="stmt"/>
       </file>
     </package>
-    <package name="pages.signout">
+    <package name="pages.signup">
       <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <file name="index.vue" path="/Users/sh.alisultanov/Desktop/Projects/github/music-player/pages/signout/index.vue">
+      <file name="index.vue" path="/Users/sh.alisultanov/Desktop/Projects/github/music-player/pages/signup/index.vue">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="1" count="6" type="stmt"/>
       </file>

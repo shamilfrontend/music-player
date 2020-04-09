@@ -6,7 +6,7 @@ const User = require('../models/user.model')
 
 const jwtSecret = process.env.JWT_SECRET_KEY || 'shamil-music'
 
-const getAll = async (req, res) => {
+const getUsers = async (req, res) => {
   try {
     const users = await User.find()
     res.status(200).json(users)
@@ -17,7 +17,7 @@ const getAll = async (req, res) => {
   }
 }
 
-const login = async (req, res) => {
+const signIn = async (req, res) => {
   try {
     const errors = validationResult(req)
 
@@ -61,7 +61,7 @@ const login = async (req, res) => {
   }
 }
 
-const create = async (req, res) => {
+const signUp = async (req, res) => {
   try {
     const errors = validationResult(req)
 
@@ -104,19 +104,4 @@ const create = async (req, res) => {
   }
 }
 
-const remove = async (req, res) => {
-  try {
-    await User.deleteOne({
-      _id: req.params.id
-    })
-    res.json({
-      message: 'Успешно удалено'
-    })
-  } catch (e) {
-    res.status(500).json({
-      message: 'Что-то пошло не так'
-    })
-  }
-}
-
-module.exports = { getAll, login, create, remove }
+module.exports = { getUsers, signIn, signUp }
