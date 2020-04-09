@@ -3,7 +3,6 @@ const Music = require('../models/music.model')
 const getMusics = async (req, res) => {
   try {
     const musics = await Music.find()
-    // console.log('musics', musics)
     res.status(200).json(musics)
   } catch (e) {
     res.status(500).json({

@@ -21,10 +21,10 @@ const musicSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  numberOfPlays: {
+  listening: {
     type: Number,
     default: 0
   }
 })
 
-module.exports = model('Music', musicSchema)
+module.exports = model('musics', musicSchema)
