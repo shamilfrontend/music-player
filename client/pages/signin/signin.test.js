@@ -6,7 +6,9 @@ describe('SignInPage', () => {
   let instance
 
   beforeEach(() => {
-    instance = shallowMount(Component)
+    instance = shallowMount(Component, {
+      stubs: ['nuxt-link']
+    })
   })
 
   test('should match snapshot', () => {

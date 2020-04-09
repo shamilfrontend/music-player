@@ -7,7 +7,9 @@
 
 <script>
 export default {
-  name: 'HomePage'
+  name: 'HomePage',
+
+  middleware: 'is-auth'
 }
 </script>
 

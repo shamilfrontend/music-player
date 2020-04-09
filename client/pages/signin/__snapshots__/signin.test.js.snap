@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SignInPage should match snapshot 1`] = `
+<div class="login-page">
+  <div class="login-page__inner">
+    <h1 class="login-page__title">Вход</h1> <input type="text" placeholder="Введите логин" class="login-page__field"> <input type="password" placeholder="Введите пароль" class="login-page__field"> <button class="login-page__btn">Войти</button>
+    <nuxt-link-stub to="/signup" class="login-page__link">Регистрация</nuxt-link-stub>
+  </div>
+</div>
+`;

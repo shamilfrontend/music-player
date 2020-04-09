@@ -2,6 +2,6 @@
 
 exports[`SignUpPage should match snapshot 1`] = `
 <div>
-  <h1>SignUpPage</h1>
+  <h1>Регистрация</h1>
 </div>
 `;

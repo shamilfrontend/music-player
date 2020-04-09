@@ -1,12 +1,14 @@
 <template>
   <div>
-    <h1>SignUpPage</h1>
+    <h1>Регистрация</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'SignUpPage'
+  name: 'SignUpPage',
+
+  layout: 'site'
 }
 </script>
 
