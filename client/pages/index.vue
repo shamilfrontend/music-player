@@ -33,7 +33,7 @@
       </div>
 
       <ul class="playlist">
-        <li class="list-item">
+        <li v-for="i in 15" :key="i" class="list-item">
           <img
             class="list-item-image"
             src="https://images.unsplash.com/photo-1567779013473-6cbdff716235?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2467&q=80"
@@ -41,62 +41,6 @@
           />
           <div class="list-item-info">
             <div class="info-title">Borderline</div>
-            <div class="info-subtitle">Tame Impala</div>
-          </div>
-          <button class="btn-add">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="feather feather-plus"
-            >
-              <path d="M12 5v14M5 12h14" />
-            </svg>
-          </button>
-        </li>
-
-        <li class="list-item">
-          <img
-            class="list-item-image"
-            src="https://images.unsplash.com/photo-1470020618177-f49a96241ae7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=934&q=80"
-            alt="song"
-          />
-          <div class="list-item-info">
-            <div class="info-title">The Less I Know The Better</div>
-            <div class="info-subtitle">Tame Impala</div>
-          </div>
-          <button class="btn-add">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="feather feather-plus"
-            >
-              <path d="M12 5v14M5 12h14" />
-            </svg>
-          </button>
-        </li>
-
-        <li class="list-item">
-          <img
-            class="list-item-image"
-            src="https://images.unsplash.com/photo-1566737236500-c8ac43014a67?ixlib=rb-1.2.1&auto=format&fit=crop&w=900&q=60"
-            alt="song"
-          />
-          <div class="list-item-info">
-            <div class="info-title">Let It Happen</div>
             <div class="info-subtitle">Tame Impala</div>
           </div>
           <button class="btn-add">
@@ -453,7 +397,7 @@ $player-color: #323542;
 .content {
   flex: 1;
   overflow: auto;
-  height: calc(100% - 32px);
+  height: calc(100% - 100px);
 
   &-header {
     padding: 0 20px 6px 20px;
@@ -561,10 +505,11 @@ $player-color: #323542;
 }
 
 .player {
-  position: relative;
-  width: 100%;
+  position: absolute;
   height: 76px;
+  right: 0;
   bottom: 0;
+  left: 0;
   background-color: $player-color;
   padding: 16px 20px;
   margin-top: auto;
@@ -835,7 +780,7 @@ $player-color: #323542;
   }
 
   .content {
-    padding-bottom: 32px;
+    padding-bottom: 100px;
   }
 }
 </style>
