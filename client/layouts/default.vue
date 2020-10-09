@@ -12,6 +12,9 @@ export default {
 
 <style lang="scss" scoped>
 .wrapper {
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 </style>

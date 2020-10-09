@@ -1,5 +1,5 @@
 export const state = () => ({
-  token: null
+  token: 'test123'
 })
 
 export const getters = {
