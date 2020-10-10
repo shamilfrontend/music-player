@@ -5,7 +5,7 @@
     </button>
 
     <div class="player-screen__cover">
-      <img :src="currentTrack.image" class="player-screen__cover-img" alt="" />
+      <img :src="currentTrack.image" alt="" />
     </div>
 
     <div class="player-screen__info">
@@ -22,8 +22,13 @@
     </div>
 
     <div class="action-bar">
-      <button class="btn btn-repeat"></button>
-      <button class="btn btn-back"></button>
+      <button class="btn btn-repeat">
+        <i class="fa fa-repeat" aria-hidden="true" />
+      </button>
+
+      <button class="btn btn-back">
+        <i class="fa fa-backward" aria-hidden="true" />
+      </button>
 
       <button class="play-button" @click="handlePlayBtnClick">
         <i
@@ -33,8 +38,13 @@
         />
       </button>
 
-      <button class="btn btn-play-next"></button>
-      <button class="btn btn-list"></button>
+      <button class="btn btn-play-next">
+        <i class="fa fa-forward" aria-hidden="true" />
+      </button>
+
+      <button class="btn btn-list">
+        <i class="fa fa-random" aria-hidden="true" />
+      </button>
     </div>
 
     <div class="sound-bar">
@@ -102,13 +112,6 @@ export default {
 
   &__cover {
     width: 100%;
-    display: flex;
-    justify-content: center;
-
-    &-img {
-      width: 100%;
-      height: auto;
-    }
   }
 
   &__info {

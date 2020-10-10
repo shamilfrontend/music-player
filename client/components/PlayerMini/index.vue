@@ -12,7 +12,7 @@
 
       <div class="player-mini__buttons">
         <button class="player-mini__btn">
-          <i class="fa fa-backward" aria-hidden="true"></i>
+          <i class="fa fa-backward" aria-hidden="true" />
         </button>
         <button class="player-mini__btn" @click.stop="handlePlayBtnClick">
           <i
@@ -22,7 +22,7 @@
           />
         </button>
         <button class="player-mini__btn">
-          <i class="fa fa-forward" aria-hidden="true"></i>
+          <i class="fa fa-forward" aria-hidden="true" />
         </button>
       </div>
     </div>

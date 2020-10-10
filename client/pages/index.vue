@@ -142,8 +142,8 @@ export default {
 .music-app {
   position: relative;
   background-color: var(--main-color);
-  width: 320px;
-  height: 620px;
+  width: 414px;
+  height: 660px;
   box-shadow: 0 0 2px 0 rgba(40, 42, 53, 0.28);
   overflow: hidden;
   display: flex;

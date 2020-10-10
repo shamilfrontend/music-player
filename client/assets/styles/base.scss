@@ -25,11 +25,17 @@ body {
   margin: 0;
 }
 
+html {
+  height: -webkit-fill-available;
+}
+
 body {
   background-color: #181a20;
   color: var(--font-color);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
 }
 
 button {
@@ -45,6 +51,6 @@ button {
 }
 
 img {
-  width: 100%;
+  max-width: 100%;
   height: auto;
 }

@@ -3,17 +3,21 @@
     <div class="login-page__inner">
       <h1 class="login-page__title">Вход</h1>
       <input
+        v-model="formModel.email"
         type="text"
-        placeholder="Введите логин"
+        placeholder="Введите email"
         class="login-page__field"
       />
       <input
+        v-model="formModel.password"
         type="password"
         placeholder="Введите пароль"
         class="login-page__field"
       />
-      <button class="login-page__btn">Войти</button>
-      <nuxt-link to="/signup" class="login-page__link">Регистрация</nuxt-link>
+      <button class="login-page__btn" @click="handleLoginBtnClick">
+        Войти
+      </button>
+      <!-- <nuxt-link to="/signup" class="login-page__link">Регистрация</nuxt-link> -->
     </div>
   </div>
 </template>
@@ -22,7 +26,23 @@
 export default {
   name: 'SignInPage',
 
-  layout: 'site'
+  layout: 'site',
+
+  data() {
+    return {
+      formModel: {
+        email: 'shamil@mail.ru',
+        password: '123456'
+      }
+    }
+  },
+
+  methods: {
+    handleLoginBtnClick() {
+      if (!Object.values(this.formModel).every(Boolean)) return
+      this.$router.push('/')
+    }
+  }
 }
 </script>
 
