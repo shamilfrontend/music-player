@@ -82,7 +82,7 @@ export default {
   bottom: 0;
   left: 0;
   background-color: var(--player-color);
-  padding: 16px 20px;
+  padding: 16px 20px 28px;
   margin-top: auto;
 
   &__content {
