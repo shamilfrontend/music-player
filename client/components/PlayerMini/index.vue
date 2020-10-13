@@ -1,7 +1,7 @@
 <template>
   <div class="player-mini" @click="handleWrapperClick">
     <div class="player-mini__content">
-      <img :src="currentTrack.image" alt="song" style="width: 40px;" />
+      <img :src="currentTrack.imageUrl" alt="song" style="width: 40px;" />
 
       <div class="player-mini__info">
         <div class="player-mini__info-name">{{ currentTrack.name }}</div>
@@ -34,22 +34,17 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
+
 export default {
   name: 'PlayerMini',
 
-  props: {
-    isPlaying: {
-      type: Boolean,
-      default: false
-    },
-    currentTrack: {
-      type: Object,
-      default: () => ({})
-    }
-  },
-
   data() {
     return {}
+  },
+
+  computed: {
+    ...mapState('musics', ['isPlaying', 'isPlayerScreenShown', 'currentTrack'])
   },
 
   watch: {
@@ -58,12 +53,24 @@ export default {
   },
 
   methods: {
+    ...mapMutations('musics', ['setData']),
+
     handleWrapperClick() {
-      this.$emit('open')
+      this.setData([
+        {
+          key: 'isPlayerScreenShown',
+          value: true
+        }
+      ])
     },
 
     handlePlayBtnClick() {
-      this.$emit('toggle-playing', !this.isPlaying)
+      this.setData([
+        {
+          key: 'isPlaying',
+          value: !this.isPlaying
+        }
+      ])
 
       if (this.isPlaying) {
         this.$refs.audio.play()

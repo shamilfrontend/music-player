@@ -17,28 +17,11 @@
         />
       </ul>
     </div>
-
-    <player-mini
-      :is-playing="isPlaying"
-      :current-track="currentTrack"
-      @open="isPlayerScreenShown = true"
-      @toggle-playing="isPlaying = $event"
-    />
-
-    <player-screen
-      :is-playing="isPlaying"
-      :is-show="isPlayerScreenShown"
-      :current-track="currentTrack"
-      @close="isPlayerScreenShown = false"
-      @toggle-playing="isPlaying = $event"
-    />
   </div>
 </template>
 
 <script>
 import TrackItem from '../components/TrackItem'
-import PlayerMini from '../components/PlayerMini'
-import PlayerScreen from '../components/PlayerScreen'
 
 export default {
   name: 'HomePage',
@@ -48,9 +31,7 @@ export default {
   layout: 'player',
 
   components: {
-    TrackItem,
-    PlayerMini,
-    PlayerScreen
+    TrackItem
   },
 
   computed: {
@@ -84,7 +65,7 @@ export default {
   display: grid;
   grid-template-rows: auto 1fr auto;
   width: 100%;
-  height: calc(100% - 51px);
+  // height: calc(100% - 51px);
   overflow: hidden;
   background-color: var(--main-color);
   box-shadow: 0 0 2px 0 rgba(40, 42, 53, 0.28);
@@ -128,24 +109,6 @@ export default {
   height: 100%;
   background-color: var(--purple);
   border-radius: 6px;
-}
-
-.player-screen {
-  position: absolute;
-  top: 0;
-  transform: translatey(100%);
-  z-index: 2;
-  background-color: var(--main-color);
-  height: 100%;
-  width: 100%;
-  padding: 20px;
-  transition: all 0.4s ease;
-
-  &_active {
-    top: 0;
-    transform: translatey(0);
-    transition: all 0.4s ease;
-  }
 }
 
 .cover-img {

@@ -1,98 +1,98 @@
 <template>
   <div ref="playerScreen" :class="playerScreenClasses">
-    <button class="player-screen__close" @click="handlePlayerScreenToggle">
-      <i class="fa fa-arrow-down" aria-hidden="true" />
-    </button>
+    <div class="player-screen__top">
+      <button class="player-screen__close" @click="handlePlayerScreenToggle">
+        <i class="fa fa-arrow-down" aria-hidden="true" />
+      </button>
 
-    <div class="player-screen__cover">
-      <img :src="currentTrack.image" alt="" />
-    </div>
-
-    <div class="player-screen__info">
-      <p class="player-screen__info-name">{{ currentTrack.name }}</p>
-      <p class="player-screen__info-author">{{ currentTrack.author }}</p>
-    </div>
-
-    <div class="song-progress">
-      <span class="song-progress__time">01:24</span>
-      <div class="song-progress__bar">
-        <span class="song-progress__bar-fill" style="width: 40%;" />
+      <div class="player-screen__cover">
+        <img :src="currentTrack.imageUrl" alt="" />
       </div>
-      <span class="song-progress__time">03:44</span>
-    </div>
 
-    <div class="action-bar">
-      <button class="btn btn-repeat">
-        <i class="fa fa-repeat" aria-hidden="true" />
-      </button>
-
-      <button class="btn btn-back">
-        <i class="fa fa-backward" aria-hidden="true" />
-      </button>
-
-      <button class="play-button" @click="handlePlayBtnClick">
-        <i
-          class="fa"
-          :class="isPlaying ? 'fa-play' : 'fa-pause'"
-          aria-hidden="true"
-        />
-      </button>
-
-      <button class="btn btn-play-next">
-        <i class="fa fa-forward" aria-hidden="true" />
-      </button>
-
-      <button class="btn btn-list">
-        <i class="fa fa-random" aria-hidden="true" />
-      </button>
-    </div>
-
-    <div class="sound-bar">
-      <button class="btn btn-volume-down"></button>
-      <div class="proggres-bar volume">
-        <span class="progress"></span>
+      <div class="player-screen__progress">
+        <progress value="35" max="100" />
       </div>
-      <button class="btn btn-volume-up"></button>
+      <div class="player-screen__times">
+        <div class="current-time">1:35</div>
+        <div class="end-time">2:43</div>
+      </div>
+    </div>
+
+    <div class="player-screen__bottom">
+      <div class="player-screen__info">
+        <p class="player-screen__info-name">{{ currentTrack.name }}</p>
+        <p class="player-screen__info-author">{{ currentTrack.author }}</p>
+      </div>
+
+      <div class="music-controls">
+        <button class="music-btn repeat" type="button">
+          <i class="fa fa-repeat" aria-hidden="true" />
+        </button>
+
+        <button class="music-btn rewind" type="button">
+          <i class="fa fa-backward" aria-hidden="true" />
+        </button>
+
+        <button
+          class="music-btn play-pause"
+          type="button"
+          @click="handlePlayBtnClick"
+        >
+          <i
+            class="fa"
+            :class="isPlaying ? 'fa-play' : 'fa-pause'"
+            aria-hidden="true"
+          />
+        </button>
+
+        <button class="music-btn forward" type="button">
+          <i class="fa fa-forward" aria-hidden="true" />
+        </button>
+
+        <button class="music-btn shuffle" type="button">
+          <i class="fa fa-random" aria-hidden="true" />
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
+
 export default {
   name: 'PlayerScreen',
 
-  props: {
-    isPlaying: {
-      type: Boolean,
-      default: false
-    },
-    isShow: {
-      type: Boolean,
-      default: false
-    },
-    currentTrack: {
-      type: Object,
-      default: () => ({})
-    }
-  },
-
   computed: {
+    ...mapState('musics', ['isPlaying', 'isPlayerScreenShown', 'currentTrack']),
+
     playerScreenClasses() {
       return {
         'player-screen': true,
-        'player-screen_active': this.isShow
+        'player-screen_active': this.isPlayerScreenShown
       }
     }
   },
 
   methods: {
+    ...mapMutations('musics', ['setData']),
+
     handlePlayerScreenToggle() {
-      this.$emit('close')
+      this.setData([
+        {
+          key: 'isPlayerScreenShown',
+          value: false
+        }
+      ])
     },
 
     handlePlayBtnClick() {
-      const value = !this.isPlaying
-      this.$emit('toggle-playing', value)
+      this.setData([
+        {
+          key: 'isPlaying',
+          value: !this.isPlaying
+        }
+      ])
     }
   }
 }
@@ -100,6 +100,16 @@ export default {
 
 <style lang="scss" scoped>
 .player-screen {
+  position: absolute;
+  top: 0;
+  transform: translatey(100%);
+  z-index: 2;
+  background-color: var(--main-color);
+  height: 100%;
+  width: 100%;
+  padding: 16px;
+  transition: all 0.4s ease;
+
   &__close {
     display: block;
     width: 100%;
@@ -112,14 +122,53 @@ export default {
 
   &__cover {
     width: 100%;
+    margin-bottom: 16px;
+
+    img {
+      display: block;
+      margin-right: auto;
+      margin-left: auto;
+    }
+  }
+
+  &__progress {
+    & > progress {
+      border: 0;
+      color: #ed5483;
+      height: 5px;
+      width: 100%;
+      -webkit-appearance: none;
+
+      &::-webkit-progress-value {
+        background-color: #b8235a;
+        border-radius: 10px;
+      }
+
+      &::-webkit-progress-bar {
+        height: 5px;
+        background-color: #d8d8d8;
+        border-radius: 10px;
+      }
+    }
+  }
+
+  &__times {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 12px;
+    color: var(--font-color);
   }
 
   &__info {
+    padding-top: 8px;
     text-align: center;
 
     &-name {
-      color: var(--font-color);
+      margin-bottom: 8px;
       font-weight: 600;
+      color: var(--font-color);
+      font-size: 18px;
     }
 
     &-author {
@@ -127,35 +176,46 @@ export default {
       font-size: 12px;
     }
   }
-}
 
-.action-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 24px;
-
-  .btn {
-    width: 24px;
-    height: 20px;
-
-    &-repeat {
-      margin-right: 16px;
-    }
-    &-list {
-      margin-left: 16px;
-    }
+  &_active {
+    top: 0;
+    transform: translatey(0);
+    transition: all 0.4s ease;
   }
 }
 
-.play-button {
-  width: 40px;
-  height: 40px;
-  color: #fff;
-  background-color: var(--purple);
-  border-radius: 12px;
-  padding: 4px;
-  box-shadow: 0 0 5px 2px rgba(91, 62, 222, 0.5);
+.music-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .music-btn {
+    padding: 1rem;
+  }
+
+  .repeat i,
+  .shuffle i {
+    color: #818181;
+  }
+
+  .forward {
+    margin-right: 1.5rem;
+  }
+
+  .rewind {
+    margin-left: 1.5rem;
+  }
+
+  .play-pause {
+    margin: 0 16px;
+    width: 40px;
+    height: 40px;
+    color: #fff;
+    background-color: var(--purple);
+    border-radius: 12px;
+    padding: 4px;
+    box-shadow: 0 0 5px 2px rgba(91, 62, 222, 0.5);
+  }
 }
 
 .song-progress {
@@ -191,17 +251,6 @@ export default {
   }
 }
 
-.sound-bar {
-  display: flex;
-  align-items: center;
-  margin-top: 24px;
-
-  .btn {
-    width: 16px;
-    height: 16px;
-  }
-}
-
 .volume-slider {
   -webkit-appearance: none;
   width: calc(100% - (70px));
@@ -212,22 +261,5 @@ export default {
   padding: 0;
   margin: 0;
   cursor: pointer;
-}
-
-.volume {
-  overflow: visible;
-  cursor: pointer;
-}
-
-.volume .progress:after {
-  content: '';
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background-color: var(--purple);
-  right: 0;
-  top: 50%;
-  transform: translatey(-50%);
 }
 </style>

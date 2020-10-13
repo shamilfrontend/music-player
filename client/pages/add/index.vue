@@ -1,21 +1,15 @@
 <template>
-  <div class="tracks">
-    <header class="tracks__header">
-      <h1 class="tracks__title">Все треки</h1>
+  <div class="add-track-page">
+    <header class="add-track-page__header">
+      <h1 class="add-track-page__title">Добавить музыку</h1>
     </header>
-    <ul>
-      <li>1</li>
-      <li>2</li>
-      <li>3</li>
-      <li>4</li>
-      <li>5</li>
-    </ul>
+    <section>add-track-page</section>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'TracksPage',
+  name: 'AddTrackPage',
 
   middleware: 'is-auth',
 
@@ -24,7 +18,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.tracks {
+.add-track-page {
   &__header {
     padding: 16px;
     border-bottom: 1px solid var(--secondary-font-color);

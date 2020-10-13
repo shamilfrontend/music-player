@@ -2,12 +2,11 @@
 @import "./font-awesome-4.7.0/css/font-awesome.min.css";
 
 :root {
-  font-family: 'DM-sans', sans-serif;
-
   --main-color: #1f2128;
   --font-color: #fff;
   --secondary-font-color: #59657c;
-  --purple: #6343e4;
+  --purple: #6343e4; // b8235a
+  --secong: #b8235a;
   --player-color: #323542;
 
   --player-mini-height: 76px;
@@ -27,6 +26,7 @@ body {
 
 html {
   height: -webkit-fill-available;
+  font-family: 'DM-sans', sans-serif;
 }
 
 body {

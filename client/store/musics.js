@@ -46,7 +46,13 @@ export const state = () => ({
 
 export const getters = {}
 
-export const mutations = {}
+export const mutations = {
+  setData(state, payload = []) {
+    payload.forEach(({ key, value }) => {
+      state[key] = value
+    })
+  }
+}
 
 export const actions = {
   async fetchMusics({ commit }) {}
