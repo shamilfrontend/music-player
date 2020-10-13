@@ -42,11 +42,11 @@ export default {
   methods: {
     ...mapActions('auth', ['signIn']),
 
-    async handleLoginBtnClick() {
+    handleLoginBtnClick() {
       if (!Object.values(this.formModel).every(Boolean)) return
 
       try {
-        await this.signIn(this.formModel)
+        // await this.signIn(this.formModel)
         this.$router.push('/')
       } catch {
         // do nothing
