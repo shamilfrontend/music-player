@@ -1,6 +1,12 @@
 # music-player
 
-> music player
+> Зачем я это делаю? - нравится)
+
+> Можно ли забрать себе? - Да, конечно, на здоровье)
+
+> Текущий статус - в разработке
+
+> demo - https://my-misuc-player.herokuapp.com
 
 ## Build Setup
 
