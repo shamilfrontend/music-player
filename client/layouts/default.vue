@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="default-layout">
     <nuxt />
   </div>
 </template>
@@ -11,11 +11,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.wrapper {
+.default-layout {
   display: flex;
-  justify-content: center;
   align-items: center;
-  flex-direction: column;
-  height: 100vh;
+  justify-content: center;
+  min-height: 100vh;
 }
 </style>

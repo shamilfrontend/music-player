@@ -24,6 +24,10 @@ const musicSchema = new Schema({
   listening: {
     type: Number,
     default: 0
+  },
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'users'
   }
 })
 

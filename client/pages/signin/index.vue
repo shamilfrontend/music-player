@@ -17,30 +17,40 @@
       <button class="login-page__btn" @click="handleLoginBtnClick">
         Войти
       </button>
-      <!-- <nuxt-link to="/signup" class="login-page__link">Регистрация</nuxt-link> -->
+      <nuxt-link to="/signup" class="login-page__link">Регистрация</nuxt-link>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'SignInPage',
 
-  layout: 'site',
+  layout: 'default',
 
   data() {
     return {
       formModel: {
-        email: 'shamil@mail.ru',
-        password: '123456'
+        email: 'a_shoma@mail.ru',
+        password: '12345678'
       }
     }
   },
 
   methods: {
-    handleLoginBtnClick() {
+    ...mapActions('auth', ['signIn']),
+
+    async handleLoginBtnClick() {
       if (!Object.values(this.formModel).every(Boolean)) return
-      this.$router.push('/')
+
+      try {
+        await this.signIn(this.formModel)
+        this.$router.push('/')
+      } catch {
+        // do nothing
+      }
     }
   }
 }
@@ -53,7 +63,14 @@ export default {
   justify-content: center;
   font-size: 20px;
   text-align: center;
-  padding-top: 50px;
+
+  &__inner {
+  }
+
+  &__title {
+    margin-top: 0;
+    margin-bottom: 24px;
+  }
 
   &__field,
   &__btn,

@@ -77,13 +77,9 @@ export default {
 
 <style lang="scss" scoped>
 .player-mini {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background-color: var(--player-color);
+  height: 76px;
   padding: 16px 20px 28px;
-  margin-top: auto;
+  background-color: var(--player-color);
 
   &__content {
     display: flex;

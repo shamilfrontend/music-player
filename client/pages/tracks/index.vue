@@ -1,14 +1,14 @@
 <template>
   <div>
-    <h1>Регистрация</h1>
+    TracksPage
   </div>
 </template>
 
 <script>
 export default {
-  name: 'SignUpPage',
+  name: 'TracksPage',
 
-  layout: 'default'
+  layout: 'player'
 }
 </script>
 

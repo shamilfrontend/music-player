@@ -19,7 +19,7 @@ const signUpValidators = [
 ]
 
 router.get('/', getUsers)
-router.post('/signup', signUpValidators, signUp)
 router.post('/signin', signInValidators, signIn)
+router.post('/signup', signUpValidators, signUp)
 
 module.exports = router

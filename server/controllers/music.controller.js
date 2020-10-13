@@ -1,8 +1,8 @@
-const Music = require('../models/music.model')
+const MusicModel = require('../models/music.model')
 
 const getMusics = async (req, res) => {
   try {
-    const musics = await Music.find()
+    const musics = await MusicModel.find()
     res.status(200).json(musics)
   } catch (e) {
     res.status(500).json({
@@ -13,11 +13,11 @@ const getMusics = async (req, res) => {
 
 const addMusic = async (req, res) => {
   try {
-    const music = new Music({
+    const music = new MusicModel({
       name: req.body.name,
       author: req.body.author,
-      imageUrl: '/music-images' + req.file.imageUrl,
-      musicUrl: '/musics' + req.file.musicUrl
+      imageUrl: `/albums${req.file.imageUrl}`,
+      musicUrl: `/musics${req.file.musicUrl}`
     })
 
     await music.save()
@@ -32,11 +32,9 @@ const addMusic = async (req, res) => {
 
 const removeMusic = async (req, res) => {
   try {
-    await Music.deleteOne({
-      _id: req.params.id
-    })
+    await MusicModel.deleteOne({ _id: req.params.id })
     res.json({
-      message: 'Успешно удалено'
+      message: 'Удалено'
     })
   } catch (e) {
     res.status(500).json({

@@ -52,6 +52,8 @@ const signIn = async (req, res) => {
 
     res.json({
       userId: user.id,
+      email: user.email,
+      name: user.name,
       token
     })
   } catch (e) {
