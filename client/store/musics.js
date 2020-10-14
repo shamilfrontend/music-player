@@ -50,7 +50,7 @@ export const state = () => ({
   tracks,
   currentTrack: tracks[0],
 
-  isPlaying: true,
+  isPlaying: false,
   isPlayerScreenShown: false
 })
 

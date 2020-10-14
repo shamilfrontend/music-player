@@ -7,6 +7,8 @@
 
       <div class="player-screen__cover">
         <img :src="currentTrack.imageUrl" alt="" />
+
+        <player-equilizer />
       </div>
 
       <div class="player-screen__progress">
@@ -59,9 +61,14 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex'
+import PlayerEquilizer from './PlayerEquilizer'
 
 export default {
   name: 'PlayerScreen',
+
+  components: {
+    PlayerEquilizer
+  },
 
   computed: {
     ...mapState('musics', ['isPlaying', 'isPlayerScreenShown', 'currentTrack']),
@@ -129,7 +136,8 @@ export default {
   }
 
   &__cover {
-    width: 86%;
+    position: relative;
+    width: 280px;
     margin: 0 auto 16px;
 
     img {
