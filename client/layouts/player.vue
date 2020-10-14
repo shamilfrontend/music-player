@@ -74,7 +74,7 @@ export default {
   }
 
   &__footer {
-    min-height: 126px;
+    min-height: calc(var(--player-mini-height) + var(--player-menu-height));
   }
 }
 

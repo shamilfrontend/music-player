@@ -1,7 +1,7 @@
 <template>
   <div class="player-mini" @click="handleWrapperClick">
     <div class="player-mini__content">
-      <img :src="currentTrack.imageUrl" alt="song" style="width: 40px;" />
+      <img :src="currentTrack.imageUrl" class="player-mini__image" alt="song" />
 
       <div class="player-mini__info">
         <div class="player-mini__info-name">{{ currentTrack.name }}</div>
@@ -84,8 +84,8 @@ export default {
 
 <style lang="scss" scoped>
 .player-mini {
-  height: 76px;
-  padding: 16px 20px 28px;
+  height: var(--player-mini-height);
+  padding: 12px;
   background-color: var(--dark-color-medium);
   border-top: 1px solid var(--dark-color);
 
@@ -94,9 +94,14 @@ export default {
     align-items: center;
   }
 
+  &__image {
+    min-width: 40px;
+    height: 40px;
+    margin-right: 12px;
+  }
+
   &__info {
-    width: 170px;
-    margin-left: 10px;
+    width: calc(100% - 150px);
 
     * {
       overflow: hidden;

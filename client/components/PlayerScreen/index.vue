@@ -129,8 +129,8 @@ export default {
   }
 
   &__cover {
-    width: 100%;
-    margin-bottom: 16px;
+    width: 86%;
+    margin: 0 auto 16px;
 
     img {
       display: block;
@@ -209,11 +209,11 @@ export default {
   }
 
   .forward {
-    margin-right: 1.5rem;
+    margin-right: 8px;
   }
 
   .rewind {
-    margin-left: 1.5rem;
+    margin-left: 8px;
   }
 
   .play-pause {
