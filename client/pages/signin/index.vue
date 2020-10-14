@@ -17,7 +17,7 @@
       <button class="login-page__btn" @click="handleLoginBtnClick">
         Войти
       </button>
-      <nuxt-link to="/signup" class="login-page__link">Регистрация</nuxt-link>
+      <!--nuxt-link to="/signup" class="login-page__link">Регистрация</nuxt-link-->
     </div>
   </div>
 </template>
