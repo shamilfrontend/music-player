@@ -75,12 +75,6 @@ export default {
   color: #fff;
 }
 
-.tracks {
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-}
-
 .proggres-bar {
   height: 2px;
   width: 100%;
