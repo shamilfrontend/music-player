@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'TrackItem',
 
@@ -21,20 +23,14 @@ export default {
     track: {
       type: Object,
       default: () => ({})
-    },
-    isPlaying: {
-      type: Boolean,
-      default: false
-    },
-    currentTrackId: {
-      type: Number,
-      default: null
     }
   },
 
   computed: {
+    ...mapState('musics', ['isPlaying', 'currentTrack']),
+
     iconClasses() {
-      return this.isPlaying && this.track.id === this.currentTrackId
+      return this.isPlaying && this.track._id === this.currentTrack._id
         ? 'fa-play'
         : 'fa-pause'
     }
@@ -42,7 +38,7 @@ export default {
 
   methods: {
     handleTrackClick() {
-      this.$emit(this.isPlaying ? 'play' : 'pause', this.track)
+      // do nothing
     }
   }
 }

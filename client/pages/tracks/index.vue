@@ -3,23 +3,37 @@
     <header class="tracks__header">
       <h1 class="tracks__title">Все треки</h1>
     </header>
-    <ul>
-      <li>1</li>
-      <li>2</li>
-      <li>3</li>
-      <li>4</li>
-      <li>5</li>
-    </ul>
+
+    <div class="content">
+      <ul class="tracks">
+        <track-item
+          v-for="(track, index) in tracks"
+          :key="index"
+          :track="track"
+        />
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import TrackItem from '../../components/TrackItem'
+
 export default {
   name: 'TracksPage',
 
   middleware: 'is-auth',
 
-  layout: 'player'
+  layout: 'player',
+
+  components: {
+    TrackItem
+  },
+
+  computed: {
+    ...mapState('musics', ['tracks'])
+  }
 }
 </script>
 

@@ -11,8 +11,6 @@
           v-for="(track, index) in tracks"
           :key="index"
           :track="track"
-          @play="handlePlayTrack"
-          @pause="handlePauseTrack"
         />
       </ul>
     </div>
@@ -42,20 +40,6 @@ export default {
         'player-screen': true,
         'player-screen_active': this.isPlayerScreenShown
       }
-    }
-  },
-
-  methods: {
-    handlePlayTrack(track) {
-      this.currentTrack = track
-    },
-
-    handlePauseTrack(track) {
-      this.currentTrack = track
-    },
-
-    handlePlayerScreenToggle() {
-      this.isPlayerScreenShown = !this.isPlayerScreenShown
     }
   }
 }
