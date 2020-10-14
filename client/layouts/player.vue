@@ -57,8 +57,10 @@ export default {
   padding-left: 12px;
 
   &__btn {
+    width: 25%;
     padding: 16px;
     color: var(--font-color);
+    text-align: center;
 
     &.nuxt-link-exact-active {
       color: var(--purple);
