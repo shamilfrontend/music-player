@@ -30,7 +30,7 @@ export default {
   height: 60px;
   padding-right: 20px;
   padding-left: 20px;
-  background-color: var(--player-color);
+  background-color: var(--dark-color-medium);
   color: var(--font-color);
 
   &__btn {

@@ -1,17 +1,16 @@
 <template>
-  <div class="music-app">
-    <div class="content">
-      <div class="content__header">
-        <span class="content__title">Популярные треки</span>
-      </div>
+  <div class="index-page">
+    <div class="index-page__header">
+      <span class="index-page__title">Популярные треки</span>
+      <nuxt-link to="/tracks" class="index-page__link">Все треки</nuxt-link>
+    </div>
 
+    <div class="content">
       <ul class="tracks">
         <track-item
           v-for="(track, index) in tracks"
           :key="index"
           :track="track"
-          :is-playing="isPlaying"
-          :current-track-id="currentTrack.id"
           @play="handlePlayTrack"
           @pause="handlePauseTrack"
         />
@@ -21,6 +20,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import TrackItem from '../components/TrackItem'
 
 export default {
@@ -35,6 +35,8 @@ export default {
   },
 
   computed: {
+    ...mapState('musics', ['tracks']),
+
     playerScreenClasses() {
       return {
         'player-screen': true,
@@ -60,24 +62,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.music-app {
+.index-page {
   position: relative;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  width: 100%;
-  // height: calc(100% - 51px);
-  overflow: hidden;
-  background-color: var(--main-color);
-  box-shadow: 0 0 2px 0 rgba(40, 42, 53, 0.28);
-}
-
-.content {
-  overflow: auto;
-  color: #fff;
+  height: 100%;
+  background-color: var(--dark-color-medium);
 
   &__header {
     display: flex;
+    justify-content: space-between;
     padding: 20px;
+    background-color: var(--dark-color);
   }
 
   &__title {
@@ -85,6 +79,16 @@ export default {
     font-size: 16px;
     font-weight: 500;
   }
+
+  &__link {
+    text-decoration: none;
+    color: var(--second-color);
+  }
+}
+
+.content {
+  overflow: auto;
+  color: #fff;
 }
 
 .tracks {
@@ -97,7 +101,7 @@ export default {
   height: 2px;
   width: 100%;
   margin: 0 8px;
-  background-color: var(--main-color);
+  background-color: var(--dark-color);
   border-radius: 2px;
   overflow: hidden;
 }
@@ -107,7 +111,7 @@ export default {
   position: relative;
   width: 40%;
   height: 100%;
-  background-color: var(--purple);
+  background-color: var(--second-color);
   border-radius: 6px;
 }
 

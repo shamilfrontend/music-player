@@ -86,7 +86,8 @@ export default {
 .player-mini {
   height: 76px;
   padding: 16px 20px 28px;
-  background-color: var(--player-color);
+  background-color: var(--dark-color-medium);
+  border-top: 1px solid var(--dark-color);
 
   &__content {
     display: flex;
@@ -109,7 +110,7 @@ export default {
     }
 
     &-author {
-      color: var(--secondary-font-color);
+      color: var(--dark-color-light);
       font-size: 12px;
     }
   }
@@ -146,7 +147,7 @@ export default {
   color: var(--font-color);
 
   &:first-of-type {
-    color: var(--secondary-font-color);
+    color: var(--dark-color-light);
   }
 }
 </style>

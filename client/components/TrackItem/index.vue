@@ -1,6 +1,6 @@
 <template>
   <li class="track-item" @click="handleTrackClick">
-    <img class="track-item__image" :src="track.image" alt="song" />
+    <img class="track-item__image" :src="track.imageUrl" alt="song" />
 
     <div class="track-item__content">
       <div class="track-item__name info-title">{{ track.name }}</div>
@@ -56,13 +56,12 @@ export default {
   padding: 10px 20px;
   border-bottom: 1px solid rgba(198, 178, 250, 0.1);
   cursor: pointer;
-  background-color: var(--main-color);
   transition: all 0.2s ease-in;
   overflow: auto;
   user-select: none;
 
   &:hover {
-    // background-color: lighten(#{var(--main-color)}, 4%);
+    background-color: var(--dark-color);
   }
 
   &__image {
@@ -82,7 +81,7 @@ export default {
 
   &__author {
     font-size: 10px;
-    color: var(--secondary-font-color);
+    color: var(--dark-color-light);
   }
 
   &__btn {

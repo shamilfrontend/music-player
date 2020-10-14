@@ -21,7 +21,7 @@ export default {
 .add-track-page {
   &__header {
     padding: 16px;
-    border-bottom: 1px solid var(--secondary-font-color);
+    border-bottom: 1px solid var(--dark-color-light);
   }
 
   &__title {

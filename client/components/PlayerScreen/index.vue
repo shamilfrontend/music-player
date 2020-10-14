@@ -1,7 +1,7 @@
 <template>
   <div ref="playerScreen" :class="playerScreenClasses">
     <div class="player-screen__top">
-      <button class="player-screen__close" @click="handlePlayerScreenToggle">
+      <button class="player-screen__close" @click="closePlayerScreen">
         <i class="fa fa-arrow-down" aria-hidden="true" />
       </button>
 
@@ -74,10 +74,16 @@ export default {
     }
   },
 
+  watch: {
+    $route() {
+      this.closePlayerScreen()
+    }
+  },
+
   methods: {
     ...mapMutations('musics', ['setData']),
 
-    handlePlayerScreenToggle() {
+    closePlayerScreen() {
       this.setData([
         {
           key: 'isPlayerScreenShown',
@@ -101,13 +107,15 @@ export default {
 <style lang="scss" scoped>
 .player-screen {
   position: absolute;
-  top: 0;
-  transform: translatey(100%);
+  top: 100%;
+  right: 0;
+  left: 0;
   z-index: 2;
-  background-color: var(--main-color);
-  height: 100%;
-  width: 100%;
-  padding: 16px;
+  background-color: var(--dark-color);
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+  transform: translatey(100%);
   transition: all 0.4s ease;
 
   &__close {
@@ -172,13 +180,15 @@ export default {
     }
 
     &-author {
-      color: var(--secondary-font-color);
+      color: var(--dark-color-light);
       font-size: 12px;
     }
   }
 
   &_active {
     top: 0;
+    height: calc(100% - var(--player-menu-height));
+    padding: 16px;
     transform: translatey(0);
     transition: all 0.4s ease;
   }
@@ -211,7 +221,7 @@ export default {
     width: 40px;
     height: 40px;
     color: #fff;
-    background-color: var(--purple);
+    background-color: var(--second-color);
     border-radius: 12px;
     padding: 4px;
     box-shadow: 0 0 5px 2px rgba(91, 62, 222, 0.5);
@@ -229,7 +239,7 @@ export default {
     display: inline-block;
     font-size: 8px;
     line-height: 12px;
-    color: var(--secondary-font-color);
+    color: var(--dark-color-light);
   }
 
   &__bar {
@@ -238,7 +248,7 @@ export default {
     width: 100%;
     margin: 0 8px;
     overflow: hidden;
-    background-color: var(--player-color);
+    background-color: var(--dark-color-medium);
 
     &-fill {
       display: block;

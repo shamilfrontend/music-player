@@ -27,7 +27,7 @@ export default {
 .tracks {
   &__header {
     padding: 16px;
-    border-bottom: 1px solid var(--secondary-font-color);
+    border-bottom: 1px solid var(--dark-color-medium);
   }
 
   &__title {

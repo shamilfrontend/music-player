@@ -1,26 +1,33 @@
 <template>
-  <div class="wrapper">
-    <nuxt />
+  <div class="app">
+    <div class="app__inner">
+      <div class="app__content">
+        <nuxt />
+      </div>
 
-    <player-mini />
+      <div class="app__footer">
+        <player-mini />
 
-    <div class="player-footer">
-      <nuxt-link to="/" class="player-footer__btn">
-        <i class="fa fa-home fa-lg" />
-      </nuxt-link>
-      <nuxt-link to="/add" class="player-footer__btn">
-        <i class="fa fa-plus fa-lg" />
-      </nuxt-link>
-      <!--nuxt-link to="/tracks2" class="player-footer__btn">
-        <i class="fa fa-heart fa-lg" />
-      </nuxt-link -->
-      <nuxt-link to="/tracks" class="player-footer__btn">
-        <i class="fa fa-bars fa-lg" />
-      </nuxt-link>
-      <button class="player-footer__btn" @click="handleLogoutClick">
-        <i class="fa fa-sign-out fa-lg" />
-      </button>
+        <div class="app-menu">
+          <nuxt-link to="/" class="app-menu__btn">
+            <i class="fa fa-home fa-lg" />
+          </nuxt-link>
+          <nuxt-link to="/add" class="app-menu__btn">
+            <i class="fa fa-plus fa-lg" />
+          </nuxt-link>
+          <!--nuxt-link to="/tracks2" class="app-menu__btn">
+            <i class="fa fa-heart fa-lg" />
+          </nuxt-link -->
+          <nuxt-link to="/tracks" class="app-menu__btn">
+            <i class="fa fa-bars fa-lg" />
+          </nuxt-link>
+          <button class="app-menu__btn" @click="handleLogoutClick">
+            <i class="fa fa-sign-out fa-lg" />
+          </button>
+        </div>
+      </div>
     </div>
+
     <player-screen />
   </div>
 </template>
@@ -46,15 +53,35 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.wrapper {
-  height: 100vh;
+.app {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+
+  &__inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    // background-color: var(--dark-color);
+  }
+
+  &__content {
+    flex-grow: 1;
+  }
+
+  &__footer {
+    min-height: 126px;
+    outline: 1px solid #f00;
+  }
 }
 
-.player-footer {
+.app-menu {
   display: flex;
   justify-content: space-between;
-  padding-right: 12px;
-  padding-left: 12px;
 
   &__btn {
     width: 25%;
@@ -63,7 +90,7 @@ export default {
     text-align: center;
 
     &.nuxt-link-exact-active {
-      color: var(--purple);
+      color: var(--second-color);
     }
   }
 }
