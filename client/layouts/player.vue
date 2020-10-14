@@ -75,7 +75,6 @@ export default {
 
   &__footer {
     min-height: 126px;
-    outline: 1px solid #f00;
   }
 }
 
