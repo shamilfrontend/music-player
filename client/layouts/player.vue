@@ -12,9 +12,9 @@
           <nuxt-link to="/" class="app-menu__btn">
             <i class="fa fa-home fa-lg" />
           </nuxt-link>
-          <nuxt-link to="/add" class="app-menu__btn">
+          <!--nuxt-link to="/add" class="app-menu__btn">
             <i class="fa fa-plus fa-lg" />
-          </nuxt-link>
+          </nuxt-link-->
           <!--nuxt-link to="/tracks2" class="app-menu__btn">
             <i class="fa fa-heart fa-lg" />
           </nuxt-link -->

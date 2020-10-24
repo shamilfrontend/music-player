@@ -17,7 +17,7 @@
         <button class="player-mini__btn" @click.stop="handlePlayBtnClick">
           <i
             class="fa"
-            :class="isPlaying ? 'fa-play' : 'fa-pause'"
+            :class="isPlaying ? 'fa-pause' : 'fa-play'"
             aria-hidden="true"
           />
         </button>
@@ -49,7 +49,13 @@ export default {
 
   watch: {
     currentTrack(value) {},
-    isPlaying(value) {}
+    isPlaying(value) {
+      if (value) {
+        this.$refs.audio.play()
+      } else {
+        this.$refs.audio.pause()
+      }
+    }
   },
 
   methods: {
@@ -71,12 +77,6 @@ export default {
           value: !this.isPlaying
         }
       ])
-
-      if (this.isPlaying) {
-        this.$refs.audio.play()
-      } else {
-        this.$refs.audio.pause()
-      }
     }
   }
 }

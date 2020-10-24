@@ -1,3 +1,16 @@
+import Cookie from 'cookie'
+import Cookies from 'js-cookie'
+import jwtDecode from 'jwt-decode'
+
+const isJWTValid = (token) => {
+  if (!token) return false
+
+  const jwtData = jwtDecode(token) || {}
+  const expires = jwtData.exp || 0
+
+  return new Date().getTime() / 1000 < expires
+}
+
 export const state = () => ({
   token: 'null'
 })
@@ -25,6 +38,8 @@ export const actions = {
 
   logout({ commit }) {
     commit('clearToken')
+    this.$axios.setToken(false)
+    Cookies.remove('jwt-token')
   },
 
   setToken({ commit }, token) {
@@ -35,5 +50,20 @@ export const actions = {
     try {
       //
     } catch (e) {}
+  },
+
+  autoLogin({ dispatch }) {
+    const cookieStr = process.browser
+      ? document.cookie
+      : this.app.context.req.headers.cookie
+
+    const cookies = Cookie.parse(cookieStr || '') || {}
+    const token = cookies['jwt-token']
+
+    if (isJWTValid(token)) {
+      dispatch('setToken', token)
+    } else {
+      dispatch('logout')
+    }
   }
 }

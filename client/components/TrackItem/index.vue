@@ -31,8 +31,8 @@ export default {
 
     iconClasses() {
       return this.isPlaying && this.track._id === this.currentTrack._id
-        ? 'fa-play'
-        : 'fa-pause'
+        ? 'fa-pause'
+        : 'fa-play'
     }
   },
 

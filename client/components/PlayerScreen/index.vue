@@ -42,7 +42,7 @@
         >
           <i
             class="fa"
-            :class="isPlaying ? 'fa-play' : 'fa-pause'"
+            :class="isPlaying ? 'fa-pause' : 'fa-play'"
             aria-hidden="true"
           />
         </button>
