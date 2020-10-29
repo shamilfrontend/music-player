@@ -1,5 +1,5 @@
 <template>
-  <li class="track-item" @click="handleTrackClick">
+  <div class="track-item" @click="handleTrackClick">
     <img class="track-item__image" :src="track.imageUrl" alt="song" />
 
     <div class="track-item__content">
@@ -7,14 +7,12 @@
       <div class="track-item__author info-subtitle">{{ track.author }}</div>
     </div>
 
-    <button class="track-item__btn">
-      <i class="fa" :class="iconClasses" aria-hidden="true" />
-    </button>
-  </li>
+    <i class="track-item__icon fa" :class="iconClasses" aria-hidden="true" />
+  </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 
 export default {
   name: 'TrackItem',
@@ -37,8 +35,15 @@ export default {
   },
 
   methods: {
+    ...mapMutations('musics', ['setData']),
+
     handleTrackClick() {
-      // do nothing
+      this.setData([
+        {
+          key: 'currentTrack',
+          value: this.track
+        }
+      ])
     }
   }
 }
@@ -80,7 +85,7 @@ export default {
     color: var(--dark-color-light);
   }
 
-  &__btn {
+  &__icon {
     margin-left: auto;
   }
 }

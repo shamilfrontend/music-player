@@ -6,13 +6,11 @@
     </div>
 
     <div class="content">
-      <ul class="tracks">
-        <track-item
-          v-for="(track, index) in tracks"
-          :key="index"
-          :track="track"
-        />
-      </ul>
+      <track-item
+        v-for="(track, index) in tracks"
+        :key="index"
+        :track="track"
+      />
     </div>
   </div>
 </template>

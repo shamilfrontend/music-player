@@ -1,5 +1,12 @@
 const tracks = [
   {
+    _id: 0,
+    imageUrl: '/albums/clean_bandit_demi_lovato_solo.jpg',
+    name: 'Solo',
+    author: 'Clean Bandit feat Demi Lovato',
+    musicUrl: '/musics/clean_bandit_demi_lovato_solo.mp3'
+  },
+  {
     _id: 1,
     imageUrl: '/albums/kansas_carry_on_wayward_son.jpg',
     name: 'Carry on Wayward Son',

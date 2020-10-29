@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import PlayerMini from '../components/PlayerMini'
 import PlayerScreen from '../components/PlayerScreen'
 
@@ -45,7 +46,15 @@ export default {
   },
 
   methods: {
+    ...mapMutations('musics', ['setData']),
+
     handleLogoutClick() {
+      this.setData([
+        {
+          key: 'isPlaying',
+          value: false
+        }
+      ])
       this.$router.push('/signin')
     }
   }

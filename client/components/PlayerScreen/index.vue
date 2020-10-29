@@ -141,6 +141,8 @@ export default {
     margin: 0 auto 16px;
 
     img {
+      width: 100%;
+      height: auto;
       display: block;
       margin-right: auto;
       margin-left: auto;

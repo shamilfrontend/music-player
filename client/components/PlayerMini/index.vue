@@ -27,7 +27,12 @@
       </div>
     </div>
 
-    <audio ref="audio" class="player-mini__audio">
+    <audio
+      id="music-audio"
+      ref="audio"
+      class="player-mini__audio"
+      @timeupdate="updateTime"
+    >
       <source :src="currentTrack.musicUrl" type="audio/mpeg" />
     </audio>
   </div>
@@ -40,7 +45,9 @@ export default {
   name: 'PlayerMini',
 
   data() {
-    return {}
+    return {
+      currentTime: 0
+    }
   },
 
   computed: {
@@ -48,12 +55,17 @@ export default {
   },
 
   watch: {
-    currentTrack(value) {},
+    currentTrack(value, oldValue) {
+      if (oldValue._id !== this.currentTrack._id) {
+        this.handleStop()
+      }
+    },
+
     isPlaying(value) {
       if (value) {
-        this.$refs.audio.play()
+        this.handlePlay()
       } else {
-        this.$refs.audio.pause()
+        this.handlePause()
       }
     }
   },
@@ -77,6 +89,28 @@ export default {
           value: !this.isPlaying
         }
       ])
+    },
+
+    handlePlay() {
+      this.$refs.audio.play()
+    },
+
+    handlePause() {
+      this.$refs.audio.pause()
+    },
+
+    loop() {
+      this.$refs.audio.currentTime = 0
+      this.$refs.audio.play()
+    },
+
+    handleStop() {
+      this.$refs.audio.pause()
+      this.$refs.audio.currentTime = 0
+    },
+
+    updateTime({ target }) {
+      this.currentTime = target.currentTime
     }
   }
 }
