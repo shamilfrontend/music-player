@@ -50,7 +50,7 @@ export default {
   mounted() {
     if (process.env.NODE_ENV === 'production') {
       this.test = 'production'
-    } else if (process.env.NODE_ENV === 'de') {
+    } else if (process.env.NODE_ENV === 'development') {
       this.test = 'development'
     } else {
       this.test = 'что то пошло не так'
