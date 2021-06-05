@@ -1,7 +1,7 @@
 <template>
   <div class="index-page">
     <div class="index-page__header">
-      <span class="index-page__title">Популярные треки</span>
+      <span class="index-page__title">Популярные треки {{ test }}</span>
       <nuxt-link to="/tracks" class="index-page__link">Все треки</nuxt-link>
     </div>
 
@@ -30,6 +30,12 @@ export default {
     TrackItem
   },
 
+  data() {
+    return {
+      test: ''
+    }
+  },
+
   computed: {
     ...mapState('musics', ['tracks']),
 
@@ -38,6 +44,16 @@ export default {
         'player-screen': true,
         'player-screen_active': this.isPlayerScreenShown
       }
+    }
+  },
+
+  mounted() {
+    if (process.env.NODE_ENV === 'production') {
+      this.test = 'production'
+    } else if (process.env.NODE_ENV === 'de') {
+      this.test = 'development'
+    } else {
+      this.test = 'что то пошло не так'
     }
   }
 }

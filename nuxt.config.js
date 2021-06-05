@@ -1,4 +1,6 @@
 module.exports = {
+  telemetry: false,
+
   srcDir: 'client/',
 
   mode: 'universal',
