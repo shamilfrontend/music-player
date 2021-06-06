@@ -1,6 +1,10 @@
 module.exports = {
   telemetry: false,
 
+  server: {
+    port: 3002
+  },
+
   srcDir: 'client/',
 
   mode: 'universal',
