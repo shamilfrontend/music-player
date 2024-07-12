@@ -1,12 +1,14 @@
 import { defineStore } from 'pinia';
-import type { Track, TracksState } from './types';
+
 import { tracks } from './constants';
+import type { Track, TracksState } from './types';
 
 const useTracksStore = defineStore({
 	id: 'tracks',
 
 	state: (): TracksState => ({
 		tracks,
+
 		currentTrack: null,
 
 		isPlaying: false,

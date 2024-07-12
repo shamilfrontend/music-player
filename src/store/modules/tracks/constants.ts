@@ -1,5 +1,6 @@
-import { Track } from "@/store/modules/tracks/types";
-import { nanoid } from "nanoid";
+import { nanoid } from 'nanoid';
+
+import type { Track } from './types';
 
 export const tracks: Track[] = [
 	{

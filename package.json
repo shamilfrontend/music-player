@@ -1,6 +1,6 @@
 {
-  "name": "qui-music",
-  "version": "0.0.0",
+  "name": "music-player-telegram-webapp",
+  "version": "0.0.1",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
@@ -9,7 +9,6 @@
     "prettier:fix": "prettier --write --ignore-unknown '**/*'"
   },
   "dependencies": {
-    "@qvant/qui-max": "^0.6.2",
     "nanoid": "^3.3.4",
     "pinia": "^2.0.9",
     "vue": "^3.2.25",
