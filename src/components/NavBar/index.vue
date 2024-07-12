@@ -27,7 +27,7 @@ import { useTelegram } from '../../hooks/useTelegram';
 const MENU_LIST = [
   {
     link: '/',
-    icon: 'fa-heart'
+    icon: 'fa-bars'
   },
   {
     link: '/add',

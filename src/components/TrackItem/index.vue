@@ -44,7 +44,7 @@ import { defineComponent, computed } from 'vue';
 import type { PropType } from 'vue';
 
 import { useTracksStore } from '../../store';
-import { ClassValue } from '../../types';
+import type { ClassValue } from '../../types';
 
 import type {
   TrackItemPropTrack,
