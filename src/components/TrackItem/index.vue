@@ -3,38 +3,54 @@
     :class="trackItemClasses"
     @click="handleTrackClick"
   >
-    <pre v-if="false">{{ track }}</pre>
-    <img class="track-item__image" :src="track.imageUrl" alt="song" />
+    <img
+      class="track-item__image"
+      :src="track.imageUrl"
+      alt="song"
+    />
 
     <div class="track-item__content">
       <div class="track-item__name info-title">{{ track.name }}</div>
       <div class="track-item__author info-subtitle">{{ track.author }}</div>
+      <div class="track-item__author info-subtitle">isLoading: {{ isLoading }}</div>
     </div>
 
     <div class="track-item__actions">
       <button
-        v-if="0"
+        v-if="isLoading"
         type="button"
         class="track-item__btn"
       >
         <i
-          class="track-item__icon fa"
-          :class="favoriteIconClasses"
+          class="track-item__icon track-item__icon-loading fa fa-spinner"
           aria-hidden="true"
         />
       </button>
 
-      <button
-        type="button"
-        class="track-item__btn"
-        @click.stop="handlePlayPauseBtnClick"
-      >
-        <i
-          class="track-item__icon fa"
-          :class="playPauseIconClasses"
-          aria-hidden="true"
-        />
-      </button>
+      <template v-else>
+        <button
+          v-if="0"
+          type="button"
+          class="track-item__btn"
+        >
+          <i
+            class="track-item__icon fa"
+            :class="favoriteIconClasses"
+            aria-hidden="true"
+          />
+        </button>
+        <button
+          type="button"
+          class="track-item__btn"
+          @click.stop="handlePlayPauseBtnClick"
+        >
+          <i
+            class="track-item__icon fa"
+            :class="playPauseIconClasses"
+            aria-hidden="true"
+          />
+        </button>
+      </template>
     </div>
   </div>
 </template>
@@ -74,6 +90,8 @@ export default defineComponent({
       () => isPlaying.value && props.track.id === currentTrack.value?.id
     );
 
+    const isLoading = computed<boolean>(() => tracksStore.isLoadingTrack);
+
     const trackItemClasses = computed<ClassValue>(() => ({
       'track-item': true,
       'track-item_active': isCurrentTrackActive.value
@@ -104,6 +122,7 @@ export default defineComponent({
 
     return {
       isPlaying,
+      isLoading,
       trackItemClasses,
       favoriteIconClasses,
       playPauseIconClasses,
@@ -115,6 +134,16 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@keyframes track-item-icon-rotating {
+  0% {
+    transform: rotateZ(0deg);
+  }
+
+  100% {
+    transform: rotateZ(360deg);
+  }
+}
+
 .track-item {
   display: flex;
   align-items: center;
@@ -164,6 +193,10 @@ export default defineComponent({
   &__icon {
     font-size: 22px;
     color: var(--font-color);
+
+    &-loading {
+      animation: track-item-icon-rotating 1s linear infinite;
+    }
   }
 
   &_active {

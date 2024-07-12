@@ -71,6 +71,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from 'vue';
+
 import type { Nullable } from '@/types';
 
 import { useTracksStore } from '../../store';
@@ -115,19 +116,32 @@ export default defineComponent({
     watch(() => currentTrack.value, (track: Track) => {
       if (!audio.value || !currentTrack.value) return;
 
+      tracksStore.setLoading(true);
       audio.value.setAttribute('src', track.trackUrl);
 
       if (currentTrack.value?.id === track.id) {
         if (isPlaying.value) {
           audio.value.play();
+          console.log('play');
+
+          audio.value.addEventListener('canplaythrough', () => {
+            tracksStore.setLoading(false);
+          });
         } else {
           audio.value.pause();
+          tracksStore.setLoading(false);
         }
       } else {
         if (!isPlaying.value) {
           audio.value.play();
+          tracksStore.setLoading(false);
+
+          audio.value.addEventListener('canplaythrough', () => {
+            console.log('load track');
+          });
         } else {
           audio.value.pause();
+          tracksStore.setLoading(false);
         }
       }
     });

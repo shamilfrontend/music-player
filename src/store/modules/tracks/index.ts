@@ -12,7 +12,8 @@ const useTracksStore = defineStore({
 		currentTrack: null,
 
 		isPlaying: false,
-		isPlayerScreenShown: false
+		isPlayerScreenShown: false,
+		isLoadingTrack: false,
 	}),
 
 	getters: {
@@ -36,9 +37,14 @@ const useTracksStore = defineStore({
 
 		setPlaying(value: boolean): void {
 			this.isPlaying = value;
+		},
+
+		setLoading(value: boolean): void {
+			this.isPlaying = value;
 		}
 	}
 });
 
 export default useTracksStore;
-export { useTracksStore, Track }
+export { useTracksStore }
+export type { Track }

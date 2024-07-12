@@ -14,4 +14,5 @@ export interface TracksState {
   currentTrack: Nullable<Track>;
   isPlaying: boolean;
   isPlayerScreenShown: boolean;
+  isLoadingTrack: boolean;
 }
