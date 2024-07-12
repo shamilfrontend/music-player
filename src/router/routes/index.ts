@@ -2,7 +2,6 @@ import type { RouteRecordRaw, RouteComponent } from 'vue-router';
 
 const HomePage = (): Promise<RouteComponent> => import('../../pages/HomePage/index.vue');
 const AddTrackPage = (): Promise<RouteComponent> => import('../../pages/AddTrackPage/index.vue');
-const FavoritesTracksPage = (): Promise<RouteComponent> => import('../../pages/FavoritesTracksPage/index.vue');
 
 export const routes: RouteRecordRaw[] = [
     {
@@ -15,9 +14,4 @@ export const routes: RouteRecordRaw[] = [
         path: '/add',
         component: AddTrackPage
     },
-    {
-        name: 'FAVORITES_TRACKS',
-        path: '/favorites',
-        component: FavoritesTracksPage
-    }
 ];
