@@ -59,9 +59,10 @@ export default defineComponent({
   justify-content: space-between;
 
   &__btn {
-    width: 20%;
+    width: 100%;
     padding: 16px;
     color: var(--font-color);
+    font-size: 16px;
     text-align: center;
 
     &.router-link-exact-active {

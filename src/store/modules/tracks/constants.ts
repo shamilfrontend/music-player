@@ -85,14 +85,6 @@ export const tracks: Track[] = [
 	},
 	{
 		id: nanoid(),
-		imageUrl: '/albums/default.jpeg',
-		name: 'Мой Океан Это Ты, Куда Приводят Мечты',
-		author: 'LOne feat. Фидель',
-		favorite: true,
-		trackUrl: '/tracks/LOne_feat_idel_-_Mojj_Okean_JEto_Ty_Kuda_Privodyat_Mechty_61206354.mp3'
-	},
-	{
-		id: nanoid(),
 		imageUrl: '/albums/gorkijj_vkus.jpeg',
 		name: 'Горький вкус',
 		author: 'Султан Лагучев',

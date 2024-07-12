@@ -1,12 +1,11 @@
 <template>
   <div class="home-page">
-    <the-header />
-
     <div class="home-page__tracks">
       <track-item
         v-for="(track, index) in tracks"
         :key="index"
         :track="track"
+        class="home-page__track"
       />
     </div>
   </div>
@@ -15,14 +14,14 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 
-import TheHeader from '../../components/TheHeader';
 import TrackItem from '../../components/TrackItem/index.vue';
 
 import { useTracksStore } from '../../store';
 
 export default defineComponent({
+  name: 'HomePage',
+
   components: {
-    TheHeader,
     TrackItem
   },
 
@@ -41,12 +40,17 @@ export default defineComponent({
 <style lang="scss" scoped>
 .home-page {
   position: relative;
-  height: 100%;
   background-color: var(--dark-color-medium);
 
   &__tracks {
-    overflow: auto;
-    height: calc(100% - var(--player-mini-height));
+  }
+
+  &__track {
+    border-bottom: 1px solid rgba(198, 178, 250, 0.1);
+
+    &:last-of-type {
+      border-bottom: none;
+    }
   }
 }
 </style>

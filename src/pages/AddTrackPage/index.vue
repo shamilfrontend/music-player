@@ -1,7 +1,5 @@
 <template>
   <div class="page-wrap">
-    <the-header />
-
     <div class="page-wrap__content">
       <div class="add-track-page">
         Раздел в разработке!
@@ -13,14 +11,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-import TheHeader from '../../components/TheHeader';
-
 export default defineComponent({
-  name: 'AddTrackPage',
-
-  components: {
-    TheHeader
-  }
+  name: 'AddTrackPage'
 });
 </script>
 

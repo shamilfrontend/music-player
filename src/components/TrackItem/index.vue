@@ -120,7 +120,6 @@ export default defineComponent({
   align-items: center;
   margin: 0;
   padding: 10px 20px;
-  border-bottom: 1px solid rgba(198, 178, 250, 0.1);
   cursor: pointer;
   transition: all 0.2s ease-in;
   overflow: auto;

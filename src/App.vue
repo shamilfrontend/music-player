@@ -1,6 +1,8 @@
 <template>
   <div class="app">
     <div class="app__inner">
+      <the-header />
+
       <div class="app__content">
         <router-view />
       </div>
@@ -22,6 +24,7 @@ import { defineComponent, ref, computed } from 'vue';
 import { useTracksStore } from './store';
 import type { Nullable } from './types';
 
+import TheHeader from './components/TheHeader';
 import PlayerMini from './components/PlayerMini';
 import PlayerScreen from './components/PlayerScreen';
 import NavBar from './components/NavBar';
@@ -30,6 +33,7 @@ export default defineComponent({
   name: 'App',
 
   components: {
+    TheHeader,
     PlayerMini,
     PlayerScreen,
     NavBar
@@ -79,6 +83,8 @@ export default defineComponent({
 
   &__content {
     flex-grow: 1;
+    overflow: auto;
+    height: calc(100vh - calc(var(--player-mini-height) + var(--player-menu-height)))
   }
 
   &__footer {
