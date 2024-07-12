@@ -65,6 +65,7 @@ export default defineComponent({
 
 <style lang="scss">
 @import "./assets/styles/base";
+@import "./assets/styles/keyframes";
 
 .app {
   position: absolute;

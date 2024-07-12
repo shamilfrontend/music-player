@@ -4,18 +4,18 @@
       <div class="player-screen__cover">
         <img :src="currentTrack?.imageUrl" alt="" />
 
-        <player-equilizer />
+        <player-equilizer v-if="!isLoading" />
       </div>
 
       <div
-        v-if="0"
+        v-if="false"
         class="player-screen__progress"
       >
         <progress value="35" max="100" />
       </div>
 
       <div
-        v-if="0"
+        v-if="false"
         class="player-screen__times"
       >
         <div class="current-time">1:35</div>
@@ -31,60 +31,72 @@
 
       <div class="music-controls">
         <button
-          v-if="0"
-          class="music-controls__btn"
+          v-if="isLoading"
           type="button"
         >
           <i
-            class="fa fa-repeat"
+            class="music-controls__icon music-controls__icon-loading fa fa-spinner"
             aria-hidden="true"
           />
         </button>
 
-        <button
-          v-if="0"
-          class="rewind"
-          type="button"
-        >
-          <i
-            class="fa fa-backward"
-            aria-hidden="true"
-          />
-        </button>
+        <template v-else>
+          <button
+            v-if="false"
+            class="music-controls__btn"
+            type="button"
+          >
+            <i
+              class="fa fa-repeat"
+              aria-hidden="true"
+            />
+          </button>
 
-        <button
-          type="button"
-          class="music-controls__play-pause"
-          @click="handlePlayBtnClick"
-        >
-          <i
-            class="fa"
-            :class="isPlaying ? 'fa-pause' : 'fa-play'"
-            aria-hidden="true"
-          />
-        </button>
+          <button
+            v-if="false"
+            class="rewind"
+            type="button"
+          >
+            <i
+              class="fa fa-backward"
+              aria-hidden="true"
+            />
+          </button>
 
-        <button
-          v-if="0"
-          class="forward"
-          type="button"
-        >
-          <i
-            class="fa fa-forward"
-            aria-hidden="true"
-          />
-        </button>
+          <button
+            type="button"
+            class="music-controls__play-pause"
+            @click="handlePlayBtnClick"
+          >
+            <i
+              class="fa"
+              :class="isPlaying ? 'fa-pause' : 'fa-play'"
+              aria-hidden="true"
+            />
+          </button>
 
-        <button
-          v-if="0"
-          class="shuffle"
-          type="button"
-        >
-          <i
-            class="fa fa-random"
-            aria-hidden="true"
-          />
-        </button>
+          <button
+            v-if="false"
+            class="forward"
+            type="button"
+          >
+            <i
+              class="fa fa-forward"
+              aria-hidden="true"
+            />
+          </button>
+
+          <button
+            v-if="false"
+            class="shuffle"
+            type="button"
+          >
+            <i
+              class="fa fa-random"
+              aria-hidden="true"
+            />
+          </button>
+        </template>
       </div>
     </div>
 
@@ -123,6 +135,8 @@ export default defineComponent({
 
     const currentTrack = computed(() => tracksStore.currentTrack);
 
+    const isLoading = computed<boolean>(() => tracksStore.isLoadingTrack);
+
     const closePlayerScreen = (): void => {
       tracksStore.setPlayerScreen(false);
     };
@@ -134,6 +148,7 @@ export default defineComponent({
     return {
       isPlaying,
       currentTrack,
+      isLoading,
       playerScreenClasses,
       closePlayerScreen,
       handlePlayBtnClick
@@ -225,18 +240,17 @@ export default defineComponent({
 
   &__info {
     padding-top: 8px;
+    color: var(--font-color);
     text-align: center;
 
     &-name {
       margin-bottom: 8px;
       font-weight: 600;
-      color: var(--font-color);
       font-size: 18px;
     }
 
     &-author {
-      color: var(--dark-color-light);
-      font-size: 12px;
+      font-size: 14px;
     }
   }
 
@@ -256,13 +270,13 @@ export default defineComponent({
   column-gap: 12px;
   width: 100%;
 
-  button {
-    width: 40px;
-    height: 40px;
-  }
+  &__icon {
+    font-size: 28px;
+    color: var(--font-color);
 
-  i {
-    color: #fff;
+    &-loading {
+      animation: track-icon-rotating 1s linear infinite;
+    }
   }
 
   &__play-pause {

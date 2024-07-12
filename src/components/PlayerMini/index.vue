@@ -19,40 +19,49 @@
 
       <div class="player-mini__buttons">
         <button
-          v-if="0"
+          v-if="isLoading"
           type="button"
-          class="player-mini__btn"
-          @click.stop
         >
           <i
-            class="fa fa-backward"
+            class="player-mini__icon player-mini__icon-loading fa fa-spinner"
             aria-hidden="true"
           />
         </button>
 
-        <button
-          type="button"
-          class="player-mini__btn"
-          @click.stop="toggleTrack"
-        >
-          <i
-            class="fa"
-            :class="isPlaying ? 'fa-pause' : 'fa-play'"
-            aria-hidden="true"
-          />
-        </button>
+        <template v-else>
+          <button
+            v-if="false"
+            type="button"
+            @click.stop
+          >
+            <i
+              class="player-mini__icon fa fa-backward"
+              aria-hidden="true"
+            />
+          </button>
 
-        <button
-          v-if="0"
-          type="button"
-          class="player-mini__btn"
-          @click.stop
-        >
-          <i
-            class="fa fa-forward"
-            aria-hidden="true"
-          />
-        </button>
+          <button
+            type="button"
+            @click.stop="toggleTrack"
+          >
+            <i
+              class="player-mini__icon fa"
+              :class="isPlaying ? 'fa-pause' : 'fa-play'"
+              aria-hidden="true"
+            />
+          </button>
+
+          <button
+            v-if="false"
+            type="button"
+            @click.stop
+          >
+            <i
+              class="player-mini__icon fa fa-forward"
+              aria-hidden="true"
+            />
+          </button>
+        </template>
       </div>
     </div>
 
@@ -72,7 +81,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from 'vue';
 
-import type { Nullable } from '@/types';
+import type { Nullable } from '../../types';
 
 import { useTracksStore } from '../../store';
 import type { Track } from '../../store/modules/tracks';
@@ -90,6 +99,7 @@ export default defineComponent({
     const isPlaying = computed<boolean>(() => tracksStore.isPlaying);
     const currentTrack = computed(() => tracksStore.currentTrack);
     const isPlayerScreenShown = computed<boolean>(() => tracksStore.isPlayerScreenShown);
+    const isLoading = computed<boolean>(() => tracksStore.isLoadingTrack);
 
     const handleWrapperClick = (): void => {
       tracksStore.setPlayerScreen(true);
@@ -106,6 +116,7 @@ export default defineComponent({
     };
 
     watch(() => isPlaying.value, (value: boolean) => {
+      console.log('isPlaying.value', isPlaying.value);
       if (value) {
         audio.value?.play();
       } else {
@@ -119,29 +130,21 @@ export default defineComponent({
       tracksStore.setLoading(true);
       audio.value.setAttribute('src', track.trackUrl);
 
+      audio.value.addEventListener('canplaythrough', () => {
+        tracksStore.setLoading(false);
+      });
+
       if (currentTrack.value?.id === track.id) {
         if (isPlaying.value) {
-          audio.value.play();
-          console.log('play');
-
-          audio.value.addEventListener('canplaythrough', () => {
-            tracksStore.setLoading(false);
-          });
+          audio.value?.play();
         } else {
-          audio.value.pause();
-          tracksStore.setLoading(false);
+          audio.value?.pause();
         }
       } else {
         if (!isPlaying.value) {
           audio.value.play();
-          tracksStore.setLoading(false);
-
-          audio.value.addEventListener('canplaythrough', () => {
-            console.log('load track');
-          });
         } else {
           audio.value.pause();
-          tracksStore.setLoading(false);
         }
       }
     });
@@ -152,6 +155,7 @@ export default defineComponent({
       isPlaying,
       currentTrack,
       isPlayerScreenShown,
+      isLoading,
       handleWrapperClick,
       toggleTrack,
     }
@@ -205,23 +209,16 @@ export default defineComponent({
     margin-left: auto;
   }
 
-  &__btn {
-    & > i {
-      font-size: 28px;
-      color: var(--font-color);
-    }
+  &__icon {
+    font-size: 28px;
+    color: var(--font-color);
 
-    &:nth-child(2) {
-      margin: 0 20px;
-
-      & > i {
-        font-size: 24px;
-      }
+    &-loading {
+      animation: track-icon-rotating 1s linear infinite;
     }
   }
 
   &__audio {
-    //display: none;
     visibility: visible;
   }
 }

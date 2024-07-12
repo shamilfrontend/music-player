@@ -9,6 +9,7 @@ export interface PlayerMiniInstance {
     isPlaying: ComputedRef<boolean>;
     currentTrack: ComputedRef<Nullable<Track>>;
     isPlayerScreenShown: ComputedRef<boolean>;
+    isLoading: ComputedRef<boolean>;
     handleWrapperClick: () => void;
     toggleTrack: () => void;
 }

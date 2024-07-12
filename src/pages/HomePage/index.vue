@@ -1,13 +1,11 @@
 <template>
   <div class="home-page">
-    <div class="home-page__tracks">
-      <track-item
-        v-for="(track, index) in tracks"
-        :key="index"
-        :track="track"
-        class="home-page__track"
-      />
-    </div>
+    <track-item
+      v-for="(track, index) in tracks"
+      :key="index"
+      :track="track"
+      class="home-page__track"
+    />
   </div>
 </template>
 
@@ -41,9 +39,6 @@ export default defineComponent({
 .home-page {
   position: relative;
   background-color: var(--dark-color-medium);
-
-  &__tracks {
-  }
 
   &__track {
     border-bottom: 1px solid rgba(198, 178, 250, 0.1);

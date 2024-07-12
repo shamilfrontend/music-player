@@ -90,7 +90,9 @@ export default defineComponent({
       () => isPlaying.value && props.track.id === currentTrack.value?.id
     );
 
-    const isLoading = computed<boolean>(() => tracksStore.isLoadingTrack);
+    const isLoading = computed<boolean>(
+      () => tracksStore.isLoadingTrack && props.track.id === currentTrack.value?.id
+    );
 
     const trackItemClasses = computed<ClassValue>(() => ({
       'track-item': true,
@@ -134,16 +136,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@keyframes track-item-icon-rotating {
-  0% {
-    transform: rotateZ(0deg);
-  }
-
-  100% {
-    transform: rotateZ(360deg);
-  }
-}
-
 .track-item {
   display: flex;
   align-items: center;
@@ -195,7 +187,7 @@ export default defineComponent({
     color: var(--font-color);
 
     &-loading {
-      animation: track-item-icon-rotating 1s linear infinite;
+      animation: track-icon-rotating 1s linear infinite;
     }
   }
 

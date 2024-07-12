@@ -40,7 +40,7 @@ const useTracksStore = defineStore({
 		},
 
 		setLoading(value: boolean): void {
-			this.isPlaying = value;
+			this.isLoadingTrack = value;
 		}
 	}
 });
