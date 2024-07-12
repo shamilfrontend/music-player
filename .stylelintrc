@@ -1,0 +1,3 @@
+{
+  "extends": "@qvant/stylelint-config/scss/prettier"
+}

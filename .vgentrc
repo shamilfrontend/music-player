@@ -1,0 +1,20 @@
+{
+  "src": "./",
+  "dir": {
+    "components": "src/components",
+    "layout": "/layout",
+    "pages": "src/pages",
+    "store": "/store"
+  },
+  "components": {
+    "atomicDesign": false,
+    "styleLang": "scss",
+    "scriptLang": "ts",
+    "componentApi": "compositionApi",
+    "detached": false,
+    "useIndex": true
+  },
+  "pages": {
+    "useIndex": true
+  }
+}

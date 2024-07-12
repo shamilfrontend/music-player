@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "strict": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "declaration": true,
+    "strictNullChecks": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "lib": ["ESNext", "DOM"],
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"],
+      "#/types": ["types"],
+      "#/types/*": ["types/*"],
+      "#/tests/*": ["tests/*"]
+    },
+    "types": ["node", "vitest/global", "vite/client"],
+    "plugins": [{ "name": "@vuedx/typescript-plugin-vue" }],
+    "typeRoots": ["./node_modules/@types/", "./types"]
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "types/**/*.d.ts",
+    "types/**/*.ts",
+    "tests/**/*.d.ts",
+    "tests/**/*.ts",
+    "vite.config.ts",
+    "vitest.config.ts"
+  ],
+  "exclude": ["node_modules"]
+}
