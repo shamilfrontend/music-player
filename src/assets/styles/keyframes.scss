@@ -1,0 +1,25 @@
+@keyframes harlem {
+  0% {
+    transform: scale(1);
+  }
+
+  20% {
+    transform: scale(1.03, 1);
+  }
+
+  40% {
+    transform: scale(0.97, 1);
+  }
+
+  60% {
+    transform: scale(1.01, 1);
+  }
+
+  80% {
+    transform: scale(0.99, 1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
