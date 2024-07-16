@@ -1,5 +1,8 @@
 <template>
-  <div ref="playerScreen" :class="playerScreenClasses">
+  <div
+    ref="playerScreen"
+    :class="playerScreenClasses"
+  >
     <div class="player-screen__top">
       <div class="player-screen__cover">
         <img :src="currentTrack?.imageUrl" alt="" />
@@ -7,17 +10,14 @@
         <player-equilizer v-if="!isLoading" />
       </div>
 
-      <div
-        v-if="false"
-        class="player-screen__progress"
-      >
-        <progress value="35" max="100" />
+      <div class="player-screen__progress">
+        <progress
+          value="1"
+          max="100"
+        />
       </div>
 
-      <div
-        v-if="false"
-        class="player-screen__times"
-      >
+      <div class="player-screen__times">
         <div class="current-time">1:35</div>
         <div class="end-time">2:43</div>
       </div>
@@ -42,7 +42,6 @@
 
         <template v-else>
           <button
-            v-if="false"
             class="music-controls__btn"
             type="button"
           >
@@ -53,8 +52,7 @@
           </button>
 
           <button
-            v-if="false"
-            class="rewind"
+            class="music-controls__btn"
             type="button"
           >
             <i
@@ -76,8 +74,7 @@
           </button>
 
           <button
-            v-if="false"
-            class="forward"
+            class="music-controls__btn"
             type="button"
           >
             <i
@@ -87,8 +84,7 @@
           </button>
 
           <button
-            v-if="false"
-            class="shuffle"
+            class="music-controls__btn"
             type="button"
           >
             <i
@@ -105,7 +101,10 @@
       type="button"
       @click="closePlayerScreen"
     >
-      <i class="fa fa-arrow-down" aria-hidden="true" />
+      <i
+        class="fa fa-arrow-down"
+        aria-hidden="true"
+      />
     </button>
   </div>
 </template>
@@ -192,12 +191,12 @@ export default defineComponent({
     margin-top: auto;
     padding: 16px;
     color: #fff;
-    font-size: 12px;
+    font-size: 18px;
   }
 
   &__cover {
     position: relative;
-    width: 280px;
+    width: 310px;
     margin: 0 auto 16px;
 
     img {
@@ -267,8 +266,20 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
-  column-gap: 12px;
+  column-gap: 20px;
   width: 100%;
+
+  &__btn {
+    width: 40px;
+    height: 40px;
+    color: #fff;
+    border-radius: 12px;
+    background-color: var(--second-color);
+
+    i {
+      font-size: 14px;
+    }
+  }
 
   &__icon {
     font-size: 28px;
@@ -282,10 +293,10 @@ export default defineComponent({
   &__play-pause {
     width: 60px;
     height: 60px;
+    font-size: 20px;
     color: #fff;
     border-radius: 12px;
-    background-color: var(--second-color);
-    box-shadow: 0 0 5px 2px rgba(91, 62, 222, 0.5);
+    background-color: var(--secong);
   }
 }
 

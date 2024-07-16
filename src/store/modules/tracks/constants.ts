@@ -5,11 +5,27 @@ import type { Track } from './types';
 export const tracks: Track[] = [
 	{
 		id: nanoid(),
+		imageUrl: '/albums/miyagi_andy_panda_kosandra.jpg',
+		name: 'Kosandra',
+		author: 'MiyaGi & Andy Panda',
+		favorite: true,
+		trackUrl: '/tracks/miyagi_andy_panda_kosandra.mp3'
+	},
+	{
+		id: nanoid(),
 		imageUrl: '/albums/mezhdu_nami_vojjna.jpeg',
 		name: 'Между нами война',
 		author: 'Султан Лагучев',
 		favorite: true,
 		trackUrl: '/tracks/sultan_laguchev_mezhdu_nami_vojjna.mp3'
+	},
+	{
+		id: nanoid(),
+		imageUrl: '/albums/gazan_vorovka.jpeg',
+		name: 'Воровка',
+		author: 'Gazan',
+		favorite: true,
+		trackUrl: '/tracks/gazan_vorovka.mp3'
 	},
 	{
 		id: nanoid(),

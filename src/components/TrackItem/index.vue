@@ -12,7 +12,6 @@
     <div class="track-item__content">
       <div class="track-item__name info-title">{{ track.name }}</div>
       <div class="track-item__author info-subtitle">{{ track.author }}</div>
-      <div class="track-item__author info-subtitle">isLoading: {{ isLoading }}</div>
     </div>
 
     <div class="track-item__actions">

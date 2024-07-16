@@ -2,7 +2,7 @@
   <svg xmlns="http://www.w3.org/2000/svg" class="equilizer">
     <g v-if="isPlaying">
       <rect
-        v-for="i in 11"
+        v-for="i in 12"
         :key="i"
         class="bar"
         height=""
@@ -11,7 +11,7 @@
     </g>
     <g v-else>
       <rect
-        v-for="i in 11"
+        v-for="i in 12"
         :key="i"
         fill="var(--secong)"
         width="18px"
