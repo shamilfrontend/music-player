@@ -73,6 +73,7 @@
       preload="auto"
       @timeupdate="handleTimeUpdate"
       @loadeddata="handleLoad"
+      @volumechange="handleVolumeChange"
       @pause="state.playing = false"
       @play="state.playing = true"
     />
@@ -134,6 +135,12 @@ export default defineComponent({
       }
 
       throw new Error('Failed to load sound file.');
+    };
+
+    const handleVolumeChange = (event: Event) => {
+      const value = (event.target as HTMLAudioElement);
+
+      tracksStore.volume = value.volume * 100;
     };
 
     // watch(() => isPlaying.value, (value: boolean) => {
@@ -199,6 +206,7 @@ export default defineComponent({
       handleWrapperClick,
       toggleTrack,
       handleTimeUpdate,
+      handleVolumeChange,
       handleLoad,
     }
   }
