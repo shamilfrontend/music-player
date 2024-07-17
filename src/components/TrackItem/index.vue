@@ -108,17 +108,17 @@ export default defineComponent({
 
     const handleTrackClick = (): void => {
       if (isPlaying.value && currentTrack.value?.id === props.track.id) {
-        tracksStore.setPlaying(false);
+        tracksStore.isPlaying = false;
         return;
       }
 
-      tracksStore.setCurrentTrack(props.track);
+      tracksStore.currentTrack = props.track;
 
-      tracksStore.setPlaying(true);
+      tracksStore.isPlaying = true;
     };
 
     const handlePlayPauseBtnClick = (): void => {
-      tracksStore.setPlaying(!isPlaying.value);
+      tracksStore.isPlaying = !isPlaying.value;
     };
 
     return {

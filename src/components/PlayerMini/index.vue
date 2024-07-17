@@ -67,14 +67,15 @@
 
     <audio
       ref="audio"
-      loop
       class="player-mini__audio"
-    >
-      <source
-        :src="currentTrack?.trackUrl"
-        type="audio/mpeg"
-      />
-    </audio>
+      :loop="isLooping"
+      :src="currentTrack?.trackUrl"
+      preload="auto"
+      @timeupdate="handleTimeUpdate"
+      @loadeddata="handleLoad"
+      @pause="state.playing = false"
+      @play="state.playing = true"
+    />
   </div>
 </template>
 
@@ -97,12 +98,13 @@ export default defineComponent({
     const currentTime = ref<number>(0);
 
     const isPlaying = computed<boolean>(() => tracksStore.isPlaying);
+    const isLooping = computed<boolean>(() => tracksStore.isLooping);
     const currentTrack = computed(() => tracksStore.currentTrack);
     const isPlayerScreenShown = computed<boolean>(() => tracksStore.isPlayerScreenShown);
     const isLoading = computed<boolean>(() => tracksStore.isLoadingTrack);
 
     const handleWrapperClick = (): void => {
-      tracksStore.setPlayerScreen(true);
+      tracksStore.isPlayerScreenShown = true;
     };
 
     const toggleTrack = (): void => {
@@ -112,26 +114,45 @@ export default defineComponent({
         audio.value?.play();
       }
 
-      tracksStore.setPlaying(!isPlaying.value);
+      tracksStore.isPlaying = !isPlaying.value;
     };
 
-    watch(() => isPlaying.value, (value: boolean) => {
-      console.log('isPlaying.value', isPlaying.value);
-      if (value) {
-        audio.value?.play();
-      } else {
-        audio.value?.pause();
+    const handleTimeUpdate = () => {
+      if (!audio.value) return;
+
+      tracksStore.currentSeconds = Number(audio.value.currentTime);
+    };
+
+    const handleLoad = () => {
+      if (!audio.value) return;
+
+      if (audio.value.readyState >= 2) {
+        tracksStore.isLooping = true;
+        tracksStore.durationSeconds = Number(audio.value.duration);
+
+        return tracksStore.isPlaying = true;
       }
-    });
+
+      throw new Error('Failed to load sound file.');
+    };
+
+    // watch(() => isPlaying.value, (value: boolean) => {
+    //   console.log('isPlaying.value', isPlaying.value);
+    //   if (value) {
+    //     audio.value?.play();
+    //   } else {
+    //     audio.value?.pause();
+    //   }
+    // });
 
     watch(() => currentTrack.value, (track: Track) => {
       if (!audio.value || !currentTrack.value) return;
 
-      tracksStore.setLoading(true);
+      tracksStore.isLoadingTrack = true;
       audio.value.setAttribute('src', track.trackUrl);
 
       audio.value.addEventListener('canplaythrough', () => {
-        tracksStore.setLoading(false);
+        tracksStore.isLoadingTrack = false;
       });
 
       if (currentTrack.value?.id === track.id) {
@@ -149,15 +170,36 @@ export default defineComponent({
       }
     });
 
+    watch(() => tracksStore.isPlaying, (value: boolean) => {
+      if (!audio.value) return;
+      console.log('tracksStore.isPlaying', value)
+
+      if (value) {
+        audio.value.play();
+        return;
+      }
+
+      audio.value.pause();
+    });
+
+    watch(() => tracksStore.volume, () => {
+      if (!audio.value) return;
+
+      audio.value.volume = tracksStore.volume / 100;
+    });
+
     return {
       audio,
       currentTime,
       isPlaying,
+      isLooping,
       currentTrack,
       isPlayerScreenShown,
       isLoading,
       handleWrapperClick,
       toggleTrack,
+      handleTimeUpdate,
+      handleLoad,
     }
   }
 })
@@ -219,18 +261,7 @@ export default defineComponent({
   }
 
   &__audio {
-    visibility: visible;
-  }
-}
-
-.time {
-  display: inline-block;
-  font-size: 8px;
-  line-height: 12px;
-  color: var(--font-color);
-
-  &:first-of-type {
-    color: var(--dark-color-light);
+    //visibility: visible;
   }
 }
 </style>

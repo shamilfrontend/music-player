@@ -11,38 +11,23 @@ const useTracksStore = defineStore({
 
 		currentTrack: null,
 
+		currentSeconds: 0,
+		durationSeconds: 0,
+		volume: 100,
+
 		isPlaying: false,
+		isLooping: false,
 		isPlayerScreenShown: false,
 		isLoadingTrack: false,
 	}),
 
 	getters: {
-		popularTracks(): Track[] {
-			return this.tracks.slice(0, 8);
-		},
-
 		favoriteTracks(): Track[] {
 			return this.tracks.filter(({favorite}) => Boolean(favorite));
 		},
 	},
 
-	actions: {
-		setCurrentTrack(track: Track): void {
-			this.currentTrack = track;
-		},
-
-		setPlayerScreen(value: boolean): void {
-			this.isPlayerScreenShown = value;
-		},
-
-		setPlaying(value: boolean): void {
-			this.isPlaying = value;
-		},
-
-		setLoading(value: boolean): void {
-			this.isLoadingTrack = value;
-		}
-	}
+	actions: {}
 });
 
 export default useTracksStore;

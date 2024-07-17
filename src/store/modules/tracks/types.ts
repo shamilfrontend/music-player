@@ -11,8 +11,15 @@ export interface Track {
 
 export interface TracksState {
   tracks: Track[];
+
   currentTrack: Nullable<Track>;
+
+  currentSeconds: number;
+  durationSeconds: number;
+  volume: number;
+
   isPlaying: boolean;
+  isLooping: boolean;
   isPlayerScreenShown: boolean;
   isLoadingTrack: boolean;
 }

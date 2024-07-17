@@ -7,9 +7,12 @@ export interface PlayerMiniInstance {
     audio: Ref<Nullable<HTMLAudioElement>>;
     currentTime: Ref<number>;
     isPlaying: ComputedRef<boolean>;
+    isLooping: ComputedRef<boolean>;
     currentTrack: ComputedRef<Nullable<Track>>;
     isPlayerScreenShown: ComputedRef<boolean>;
     isLoading: ComputedRef<boolean>;
     handleWrapperClick: () => void;
     toggleTrack: () => void;
+    handleTimeUpdate: () => void;
+    handleLoad: () => void;
 }

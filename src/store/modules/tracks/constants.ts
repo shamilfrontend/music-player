@@ -5,11 +5,27 @@ import type { Track } from './types';
 export const tracks: Track[] = [
 	{
 		id: nanoid(),
+		imageUrl: '/albums/lindsey_stirling_roundtable_rival.jpg',
+		name: 'Roundtable Rival',
+		author: 'Lindsey Stirling',
+		favorite: true,
+		trackUrl: '/tracks/lindsey_stirling_roundtable_rival.mp3'
+	},
+	{
+		id: nanoid(),
 		imageUrl: '/albums/miyagi_andy_panda_kosandra.jpg',
 		name: 'Kosandra',
 		author: 'MiyaGi & Andy Panda',
 		favorite: true,
 		trackUrl: '/tracks/miyagi_andy_panda_kosandra.mp3'
+	},
+	{
+		id: nanoid(),
+		imageUrl: '/albums/aleksandr_marcinkevich_feat_grigorijj_esayan_ona_sera.jpg',
+		name: 'ONA SERA 2023',
+		author: 'Александр Марцинкевич (Кабриолет) feat. Григорий Есаян',
+		favorite: true,
+		trackUrl: '/tracks/aleksandr_marcinkevich_feat_grigorijj_esayan_ona_sera.mp3'
 	},
 	{
 		id: nanoid(),
@@ -90,6 +106,14 @@ export const tracks: Track[] = [
 		author: 'K-Maro',
 		favorite: false,
 		trackUrl: '/tracks/k-maro-femme-like-u.mp3'
+	},
+	{
+		id: nanoid(),
+		imageUrl: '/albums/korol_i_sHut_kukla_kolduna.jpeg',
+		name: 'Кукла колдуна',
+		author: 'Король и Шут',
+		favorite: true,
+		trackUrl: '/tracks/korol_i_sHut_kukla_kolduna.mp3'
 	},
 	{
 		id: nanoid(),

@@ -12,14 +12,14 @@
 
       <div class="player-screen__progress">
         <progress
-          value="1"
+          :value="progressValue"
           max="100"
         />
       </div>
 
       <div class="player-screen__times">
-        <div class="current-time">1:35</div>
-        <div class="end-time">2:43</div>
+        <div class="current-time">{{ currentSecondsConverted }}</div>
+        <div class="end-time">{{ durationSecondsConverted }}</div>
       </div>
     </div>
 
@@ -44,6 +44,7 @@
           <button
             class="music-controls__btn"
             type="button"
+            disabled
           >
             <i
               class="fa fa-repeat"
@@ -54,6 +55,7 @@
           <button
             class="music-controls__btn"
             type="button"
+            disabled
           >
             <i
               class="fa fa-backward"
@@ -76,6 +78,7 @@
           <button
             class="music-controls__btn"
             type="button"
+            disabled
           >
             <i
               class="fa fa-forward"
@@ -86,6 +89,7 @@
           <button
             class="music-controls__btn"
             type="button"
+            disabled
           >
             <i
               class="fa fa-random"
@@ -94,6 +98,16 @@
           </button>
         </template>
       </div>
+
+      <input
+        v-model.lazy.number="volume"
+        type="range"
+        class="volume-slider"
+        :style="{ 'background-size': `${volume}% 100%` }"
+        min="0"
+        max="100"
+        @input="handleVolumeInput"
+      />
     </div>
 
     <button
@@ -114,6 +128,12 @@ import { defineComponent, computed } from 'vue';
 import { useTracksStore } from '../../store';
 
 import PlayerEquilizer from './PlayerEquilizer'
+
+function convertTimeHHMMSS(value: number): string {
+  let hhmmss = new Date(value * 1000).toISOString().substr(11, 8);
+
+  return hhmmss.indexOf("00:") === 0 ? hhmmss.substr(3) : hhmmss;
+}
 
 export default defineComponent({
   name: 'PlayerScreen',
@@ -136,21 +156,45 @@ export default defineComponent({
 
     const isLoading = computed<boolean>(() => tracksStore.isLoadingTrack);
 
-    const closePlayerScreen = (): void => {
-      tracksStore.setPlayerScreen(false);
-    };
+    const volume = computed<number>(() => tracksStore.volume);
+
+    const currentSecondsConverted = computed(
+      () => convertTimeHHMMSS(tracksStore.currentSeconds)
+    );
+
+    const durationSecondsConverted = computed(
+      () => convertTimeHHMMSS(tracksStore.durationSeconds)
+    );
+
+    const progressValue = computed(
+      () => Number(tracksStore.currentSeconds / tracksStore.durationSeconds * 100)
+    );
 
     const handlePlayBtnClick = (): void => {
-      tracksStore.setPlaying(!isPlaying.value);
+      tracksStore.isPlaying = !isPlaying.value;
+    };
+
+    const handleVolumeInput = (event: Event): void => {
+      const value = (event.target as HTMLInputElement).value;
+      tracksStore.volume = Number(value);
+    };
+
+    const closePlayerScreen = (): void => {
+      tracksStore.isPlayerScreenShown = false;
     };
 
     return {
       isPlaying,
       currentTrack,
       isLoading,
+      volume,
       playerScreenClasses,
+      currentSecondsConverted,
+      durationSecondsConverted,
+      progressValue,
+      handlePlayBtnClick,
+      handleVolumeInput,
       closePlayerScreen,
-      handlePlayBtnClick
     }
   }
 });
@@ -174,6 +218,9 @@ export default defineComponent({
   transition: all 0.4s ease;
 
   &__top {
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
     margin-top: auto;
   }
 
@@ -183,6 +230,9 @@ export default defineComponent({
     align-items: center;
     justify-content: center;
     gap: 24px;
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   &__close {
@@ -196,8 +246,7 @@ export default defineComponent({
 
   &__cover {
     position: relative;
-    width: 310px;
-    margin: 0 auto 16px;
+    margin: 0 auto 4px;
 
     img {
       width: 100%;
@@ -276,6 +325,11 @@ export default defineComponent({
     border-radius: 12px;
     background-color: var(--second-color);
 
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     i {
       font-size: 14px;
     }
@@ -335,13 +389,31 @@ export default defineComponent({
 
 .volume-slider {
   -webkit-appearance: none;
-  width: calc(100% - (70px));
-  height: 2px;
+  margin-right: 15px;
+  width: 100%;
+  height: 7px;
   border-radius: 5px;
   background-color: #fff;
-  outline: none;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
+  background-image: linear-gradient(var(--secong), var(--secong));
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background-color: var(--second-color);
+    cursor: ew-resize;
+    box-shadow: 0 0 2px 0 #555;
+    transition: background .3s ease-in-out;
+  }
+
+  &::-webkit-slider-runnable-track  {
+    -webkit-appearance: none;
+    box-shadow: none;
+    border: none;
+    background: transparent;
+  }
 }
 </style>
