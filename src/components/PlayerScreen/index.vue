@@ -287,7 +287,6 @@ export default defineComponent({
   }
 
   &__info {
-    padding-top: 8px;
     color: var(--font-color);
     text-align: center;
 
@@ -400,12 +399,12 @@ export default defineComponent({
 
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
-    height: 20px;
-    width: 20px;
+    height: 26px;
+    width: 26px;
     border-radius: 50%;
     background-color: var(--second-color);
     cursor: ew-resize;
-    box-shadow: 0 0 2px 0 #555;
+    box-shadow: 0 0 2px 0 var(--dark-color-light);
     transition: background .3s ease-in-out;
   }
 
