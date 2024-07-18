@@ -1,14 +1,24 @@
 <template>
   <header class="the-header">
-    <div class="the-header__title">Music Player</div>
+    <div class="the-header__title">Привет, {{ userName }} 😉</div>
   </header>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 
+import { useTelegram } from '../../hooks/useTelegram';
+
 export default defineComponent({
-  name: 'TheHeader'
+  name: 'TheHeader',
+
+  setup() {
+    const { user } = useTelegram();
+
+    return {
+      userName: user?.username ?? 'Неизвестный'
+    }
+  }
 });
 </script>
 
