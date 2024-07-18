@@ -7,7 +7,7 @@
       <div class="player-screen__cover">
         <img :src="currentTrack?.imageUrl" alt="" />
 
-        <player-equilizer v-if="!isLoading" />
+        <player-equilizer v-if="false" />
       </div>
 
       <div class="player-screen__progress">

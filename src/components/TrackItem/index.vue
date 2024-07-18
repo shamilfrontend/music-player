@@ -150,8 +150,8 @@ export default defineComponent({
   }
 
   &__image {
-    min-width: 32px;
-    height: 32px;
+    min-width: 48px;
+    height: 48px;
     margin-right: 16px;
     object-fit: cover;
     border-radius: 10px;
@@ -164,13 +164,13 @@ export default defineComponent({
   }
 
   &__name {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 18px;
   }
 
   &__author {
-    font-size: 10px;
-    opacity: 0.7;
+    font-size: 12px;
+    opacity: 0.8;
   }
 
   &__actions {

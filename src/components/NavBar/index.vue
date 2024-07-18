@@ -60,9 +60,9 @@ export default defineComponent({
 
   &__btn {
     width: 100%;
-    padding: 16px;
+    padding: 18px;
     color: var(--font-color);
-    font-size: 16px;
+    font-size: 20px;
     text-align: center;
 
     &.router-link-exact-active {

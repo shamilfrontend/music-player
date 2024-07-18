@@ -37,6 +37,14 @@ export const tracks: Track[] = [
 	},
 	{
 		id: nanoid(),
+		imageUrl: '/albums/khalid_billie_eilish_lovely.jpeg',
+		name: 'lovely',
+		author: 'Khalid, Billie Eilish',
+		favorite: true,
+		trackUrl: '/tracks/khalid_billie_eilish_lovely.mp3'
+	},
+	{
+		id: nanoid(),
 		imageUrl: '/albums/gazan_vorovka.jpeg',
 		name: 'Воровка',
 		author: 'Gazan',
