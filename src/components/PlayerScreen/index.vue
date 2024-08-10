@@ -100,6 +100,7 @@
       </div>
 
       <input
+        v-if="false"
         v-model.lazy.number="volume"
         type="range"
         class="volume-slider"

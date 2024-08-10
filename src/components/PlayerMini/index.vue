@@ -99,6 +99,12 @@ export default defineComponent({
       tracksStore.currentSeconds = Number(audio.value.currentTime);
     };
 
+    const handleVolumeChange = (event: Event) => {
+      const value = (event.target as HTMLAudioElement);
+
+      tracksStore.volume = value.volume * 100;
+    };
+
     const handleLoad = () => {
       if (!audio.value) return;
 
@@ -110,12 +116,6 @@ export default defineComponent({
       }
 
       throw new Error('Failed to load sound file.');
-    };
-
-    const handleVolumeChange = (event: Event) => {
-      const value = (event.target as HTMLAudioElement);
-
-      tracksStore.volume = value.volume * 100;
     };
 
     watch(() => currentTrack.value, (track: Track) => {
