@@ -14,5 +14,6 @@ export interface PlayerMiniInstance {
     handleWrapperClick: () => void;
     toggleTrack: () => void;
     handleTimeUpdate: () => void;
+    handleVolumeChange: (event: Event) => void;
     handleLoad: () => void;
 }

@@ -12,7 +12,7 @@
   --dark-color-medium: #323542;
   --dark-color-light: #59657c;
   --second-color: #0064b4; // b8235a
-  --secong: #b8235a;
+  --secong: #b8275d;
   --font-color: #fff;
 
   --player-mini-height: 66px;
@@ -59,28 +59,4 @@ ul {
 
 audio {
   visibility: hidden;
-}
-
-.page-wrap {
-  position: relative;
-  height: 100%;
-  background-color: var(--dark-color-medium);
-
-  &__header {
-    padding: 20px;
-    background-color: var(--second-color);
-  }
-
-  &__title {
-    margin: 0;
-    font-weight: 700;
-    font-size: 18px;
-    line-height: 22px;
-    text-align: center;
-  }
-
-  &__content {
-    overflow: auto;
-    height: calc(100% - var(--player-mini-height));
-  }
 }

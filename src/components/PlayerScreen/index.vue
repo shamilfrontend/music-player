@@ -124,10 +124,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, onMounted, onUnmounted } from 'vue';
 import { useTracksStore } from '../../store';
 
-import PlayerEquilizer from './PlayerEquilizer'
+import { PlayerEquilizer } from './PlayerEquilizer'
 
 function convertTimeHHMMSS(value: number): string {
   let hhmmss = new Date(value * 1000).toISOString().substr(11, 8);
@@ -147,14 +147,14 @@ export default defineComponent({
 
     const playerScreenClasses = computed<Record<string, boolean>>(() => ({
       'player-screen': true,
-      'player-screen_active': tracksStore.isPlayerScreenShown
+      'player-screen_active': tracksStore.state.isPlayerScreenShown
     }));
 
-    const isPlaying = computed<boolean>(() => tracksStore.isPlaying);
+    const isPlaying = computed<boolean>(() => tracksStore.state.isPlaying);
 
     const currentTrack = computed(() => tracksStore.currentTrack);
 
-    const isLoading = computed<boolean>(() => tracksStore.isLoadingTrack);
+    const isLoading = computed<boolean>(() => tracksStore.state.isLoadingTrack);
 
     const volume = computed<number>(() => tracksStore.volume);
 
@@ -166,12 +166,14 @@ export default defineComponent({
       () => convertTimeHHMMSS(tracksStore.durationSeconds)
     );
 
-    const progressValue = computed(
-      () => Number(tracksStore.currentSeconds / tracksStore.durationSeconds * 100)
-    );
+    const progressValue = computed(() => {
+      if (!tracksStore.currentSeconds && !tracksStore.durationSeconds) return 0;
+
+      return Number(tracksStore.currentSeconds / tracksStore.durationSeconds * 100)
+    });
 
     const handlePlayBtnClick = (): void => {
-      tracksStore.isPlaying = !isPlaying.value;
+      tracksStore.state.isPlaying = !isPlaying.value;
     };
 
     const handleVolumeInput = (event: Event): void => {
@@ -180,8 +182,22 @@ export default defineComponent({
     };
 
     const closePlayerScreen = (): void => {
-      tracksStore.isPlayerScreenShown = false;
+      tracksStore.state.isPlayerScreenShown = false;
     };
+
+    const handleEscapeKeyDown = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape') {
+        closePlayerScreen()
+      }
+    };
+
+    onMounted(() => {
+      document.addEventListener('keydown', handleEscapeKeyDown);
+    });
+
+    onUnmounted(() => {
+      document.removeEventListener('keydown', handleEscapeKeyDown);
+    });
 
     return {
       isPlaying,
@@ -263,7 +279,7 @@ export default defineComponent({
       color: #ed5483;
       height: 5px;
       width: 100%;
-      -webkit-appearance: none;
+      appearance: none;
 
       &::-webkit-progress-value {
         background-color: #b8235a;
@@ -387,13 +403,13 @@ export default defineComponent({
 }
 
 .volume-slider {
-  -webkit-appearance: none;
+  appearance: none;
   margin-right: 15px;
   width: 100%;
   height: 7px;
   border-radius: 5px;
   background-color: #fff;
-  background-image: linear-gradient(var(--secong), var(--secong));
+  background-image: linear-gradient(to right, var(--secong), var(--secong));
   background-size: 100% 100%;
   background-repeat: no-repeat;
 

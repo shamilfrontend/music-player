@@ -4,9 +4,16 @@ import legacy from '@vitejs/plugin-legacy';
 import vue from '@vitejs/plugin-vue';
 import autoprefixer from 'autoprefixer';
 import { defineConfig } from 'vite';
+// import vueDevTools from 'vite-plugin-vue-devtools';
 
 export default defineConfig(() => ({
-  plugins: [vue(), legacy()],
+  plugins: [
+    vue(),
+    legacy(),
+    // vueDevTools({
+    //   launchEditor: 'webstorm'
+    // })
+  ],
 
   css: { postcss: { plugins: [autoprefixer] } },
 

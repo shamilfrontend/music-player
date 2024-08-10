@@ -15,10 +15,12 @@ const useTracksStore = defineStore({
 		durationSeconds: 0,
 		volume: 100,
 
-		isPlaying: false,
-		isLooping: false,
-		isPlayerScreenShown: false,
-		isLoadingTrack: false,
+		state: {
+			isPlaying: false,
+			isLooping: false,
+			isPlayerScreenShown: false,
+			isLoadingTrack: false,
+		},
 	}),
 
 	getters: {

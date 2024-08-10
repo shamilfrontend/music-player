@@ -32,7 +32,7 @@ export default defineComponent({
   setup() {
     const tracksStore = useTracksStore();
 
-    const isPlaying = computed<boolean>(() => tracksStore.isPlaying);
+    const isPlaying = computed<boolean>(() => tracksStore.state.isPlaying);
 
     return {
       isPlaying

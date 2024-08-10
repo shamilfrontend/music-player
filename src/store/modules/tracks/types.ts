@@ -18,8 +18,10 @@ export interface TracksState {
   durationSeconds: number;
   volume: number;
 
-  isPlaying: boolean;
-  isLooping: boolean;
-  isPlayerScreenShown: boolean;
-  isLoadingTrack: boolean;
+  state: {
+    isPlaying: boolean;
+    isLooping: boolean;
+    isPlayerScreenShown: boolean;
+    isLoadingTrack: boolean;
+  };
 }

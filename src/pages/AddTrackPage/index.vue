@@ -1,15 +1,7 @@
 <template>
-  <div class="page-wrap">
-    <div class="page-wrap__content">
-      <div class="add-track-page">
-        Раздел в разработке!
-      </div>
-
-      <div>
-        <audio-player
-          file="/tracks/miyagi_andy_panda_kosandra.mp3"
-        />
-      </div>
+  <div class="add-track-page">
+    <div class="add-track-page__content">
+      Раздел в разработке!
     </div>
   </div>
 </template>
@@ -17,19 +9,16 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-import AudioPlayer from '../../components/AudioPlayer';
-
 export default defineComponent({
-  name: 'AddTrackPage',
-
-  components: {
-    AudioPlayer
-  }
+  name: 'AddTrackPage'
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .add-track-page {
+  position: relative;
+  height: 100%;
   padding: 12px;
+  background-color: var(--dark-color-medium);
 }
 </style>

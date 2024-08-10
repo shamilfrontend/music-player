@@ -81,7 +81,7 @@ export default defineComponent({
   setup(props: TrackItemProps): TrackItemInstance {
     const tracksStore = useTracksStore();
 
-    const isPlaying = computed<boolean>(() => tracksStore.isPlaying);
+    const isPlaying = computed<boolean>(() => tracksStore.state.isPlaying);
 
     const currentTrack = computed<CurrentTrack>(() => tracksStore.currentTrack);
 
@@ -90,7 +90,7 @@ export default defineComponent({
     );
 
     const isLoading = computed<boolean>(
-      () => tracksStore.isLoadingTrack && props.track.id === currentTrack.value?.id
+      () => tracksStore.state.isLoadingTrack && props.track.id === currentTrack.value?.id
     );
 
     const trackItemClasses = computed<ClassValue>(() => ({
@@ -108,17 +108,17 @@ export default defineComponent({
 
     const handleTrackClick = (): void => {
       if (isPlaying.value && currentTrack.value?.id === props.track.id) {
-        tracksStore.isPlaying = false;
+        tracksStore.state.isPlaying = false;
         return;
       }
 
       tracksStore.currentTrack = props.track;
 
-      tracksStore.isPlaying = true;
+      tracksStore.state.isPlaying = true;
     };
 
     const handlePlayPauseBtnClick = (): void => {
-      tracksStore.isPlaying = !isPlaying.value;
+      tracksStore.state.isPlaying = !isPlaying.value;
     };
 
     return {

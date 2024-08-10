@@ -10,7 +10,7 @@
       <div class="app__footer">
         <player-mini v-show="currentTrack" />
 
-        <nav-bar />
+        <the-footer />
       </div>
     </div>
 
@@ -24,10 +24,10 @@ import { defineComponent, ref, computed } from 'vue';
 import { useTracksStore } from './store';
 import type { Nullable } from './types';
 
-import TheHeader from './components/TheHeader';
-import PlayerMini from './components/PlayerMini';
-import PlayerScreen from './components/PlayerScreen';
-import NavBar from './components/NavBar';
+import { TheHeader } from './components/TheHeader';
+import { PlayerMini } from './components/PlayerMini';
+import { PlayerScreen } from './components/PlayerScreen';
+import { TheFooter } from './components/TheFooter';
 
 export default defineComponent({
   name: 'App',
@@ -36,7 +36,7 @@ export default defineComponent({
     TheHeader,
     PlayerMini,
     PlayerScreen,
-    NavBar
+    TheFooter
   },
 
   setup() {
@@ -78,6 +78,9 @@ export default defineComponent({
   &__inner {
     display: flex;
     flex-direction: column;
+    max-width: 768px;
+    margin-left: auto;
+    margin-right: auto;
     height: 100%;
     overflow: hidden;
   }

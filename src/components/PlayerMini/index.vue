@@ -28,40 +28,17 @@
           />
         </button>
 
-        <template v-else>
-          <button
-            v-if="false"
-            type="button"
-            @click.stop
-          >
-            <i
-              class="player-mini__icon fa fa-backward"
-              aria-hidden="true"
-            />
-          </button>
-
-          <button
-            type="button"
-            @click.stop="toggleTrack"
-          >
-            <i
-              class="player-mini__icon fa"
-              :class="isPlaying ? 'fa-pause' : 'fa-play'"
-              aria-hidden="true"
-            />
-          </button>
-
-          <button
-            v-if="false"
-            type="button"
-            @click.stop
-          >
-            <i
-              class="player-mini__icon fa fa-forward"
-              aria-hidden="true"
-            />
-          </button>
-        </template>
+        <button
+          v-else
+          type="button"
+          @click.stop="toggleTrack"
+        >
+          <i
+            class="player-mini__icon fa"
+            :class="isPlaying ? 'fa-pause' : 'fa-play'"
+            aria-hidden="true"
+          />
+        </button>
       </div>
     </div>
 
@@ -74,8 +51,6 @@
       @timeupdate="handleTimeUpdate"
       @loadeddata="handleLoad"
       @volumechange="handleVolumeChange"
-      @pause="state.playing = false"
-      @play="state.playing = true"
     />
   </div>
 </template>
@@ -98,14 +73,14 @@ export default defineComponent({
     const audio = ref<Nullable<HTMLAudioElement>>(null);
     const currentTime = ref<number>(0);
 
-    const isPlaying = computed<boolean>(() => tracksStore.isPlaying);
-    const isLooping = computed<boolean>(() => tracksStore.isLooping);
+    const isPlaying = computed<boolean>(() => tracksStore.state.isPlaying);
+    const isLooping = computed<boolean>(() => tracksStore.state.isLooping);
     const currentTrack = computed(() => tracksStore.currentTrack);
-    const isPlayerScreenShown = computed<boolean>(() => tracksStore.isPlayerScreenShown);
-    const isLoading = computed<boolean>(() => tracksStore.isLoadingTrack);
+    const isPlayerScreenShown = computed<boolean>(() => tracksStore.state.isPlayerScreenShown);
+    const isLoading = computed<boolean>(() => tracksStore.state.isLoadingTrack);
 
     const handleWrapperClick = (): void => {
-      tracksStore.isPlayerScreenShown = true;
+      tracksStore.state.isPlayerScreenShown = true;
     };
 
     const toggleTrack = (): void => {
@@ -115,7 +90,7 @@ export default defineComponent({
         audio.value?.play();
       }
 
-      tracksStore.isPlaying = !isPlaying.value;
+      tracksStore.state.isPlaying = !isPlaying.value;
     };
 
     const handleTimeUpdate = () => {
@@ -128,10 +103,10 @@ export default defineComponent({
       if (!audio.value) return;
 
       if (audio.value.readyState >= 2) {
-        tracksStore.isLooping = true;
+        tracksStore.state.isLooping = true;
         tracksStore.durationSeconds = Number(audio.value.duration);
 
-        return tracksStore.isPlaying = true;
+        return tracksStore.state.isPlaying = true;
       }
 
       throw new Error('Failed to load sound file.');
@@ -143,23 +118,14 @@ export default defineComponent({
       tracksStore.volume = value.volume * 100;
     };
 
-    // watch(() => isPlaying.value, (value: boolean) => {
-    //   console.log('isPlaying.value', isPlaying.value);
-    //   if (value) {
-    //     audio.value?.play();
-    //   } else {
-    //     audio.value?.pause();
-    //   }
-    // });
-
     watch(() => currentTrack.value, (track: Track) => {
       if (!audio.value || !currentTrack.value) return;
 
-      tracksStore.isLoadingTrack = true;
+      tracksStore.state.isLoadingTrack = true;
       audio.value.setAttribute('src', track.trackUrl);
 
       audio.value.addEventListener('canplaythrough', () => {
-        tracksStore.isLoadingTrack = false;
+        tracksStore.state.isLoadingTrack = false;
       });
 
       if (currentTrack.value?.id === track.id) {
@@ -177,7 +143,7 @@ export default defineComponent({
       }
     });
 
-    watch(() => tracksStore.isPlaying, (value: boolean) => {
+    watch(() => tracksStore.state.isPlaying, (value: boolean) => {
       if (!audio.value) return;
       console.log('tracksStore.isPlaying', value)
 
@@ -215,8 +181,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .player-mini {
-  height: var(--player-mini-height);
-  padding: 10px;
+  min-height: var(--player-mini-height);
+  padding: 12px;
   background-color: var(--second-color);
   border-top: 1px solid var(--dark-color);
 
@@ -227,8 +193,8 @@ export default defineComponent({
 
   &__image {
     display: block;
-    min-width: 40px;
-    height: 40px;
+    min-width: 48px;
+    height: 48px;
     margin-right: 12px;
   }
 
