@@ -61,7 +61,6 @@ import { defineComponent, computed, ref, watch } from 'vue';
 import type { Nullable } from '../../types';
 
 import { useTracksStore } from '../../store';
-import type { Track } from '../../store/modules/tracks';
 import type { PlayerMiniInstance } from './types';
 
 export default defineComponent({
@@ -84,13 +83,13 @@ export default defineComponent({
     };
 
     const toggleTrack = (): void => {
-      if (isPlaying.value) {
-        audio.value?.pause();
-      } else {
-        audio.value?.play();
-      }
-
-      tracksStore.state.isPlaying = !isPlaying.value;
+      // if (isPlaying.value) {
+      //   audio.value?.pause();
+      // } else {
+      //   audio.value?.play();
+      // }
+      //
+      // tracksStore.state.isPlaying = !isPlaying.value;
     };
 
     const handleTimeUpdate = () => {
@@ -112,42 +111,17 @@ export default defineComponent({
         tracksStore.state.isLooping = true;
         tracksStore.durationSeconds = Number(audio.value.duration);
 
+        audio.value.play();
         return tracksStore.state.isPlaying = true;
       }
 
       throw new Error('Failed to load sound file.');
     };
 
-    watch(() => currentTrack.value, (track: Track) => {
-      if (!audio.value || !currentTrack.value) return;
-
-      tracksStore.state.isLoadingTrack = true;
-      audio.value.setAttribute('src', track.trackUrl);
-
-      audio.value.addEventListener('canplaythrough', () => {
-        tracksStore.state.isLoadingTrack = false;
-      });
-
-      if (currentTrack.value?.id === track.id) {
-        if (isPlaying.value) {
-          audio.value?.play();
-        } else {
-          audio.value?.pause();
-        }
-      } else {
-        if (!isPlaying.value) {
-          audio.value.play();
-        } else {
-          audio.value.pause();
-        }
-      }
-    });
-
     watch(() => tracksStore.state.isPlaying, (value: boolean) => {
       if (!audio.value) return;
-      console.log('tracksStore.isPlaying', value)
 
-      if (value) {
+      if (value && audio.value.readyState >= 2) {
         audio.value.play();
         return;
       }
@@ -235,7 +209,7 @@ export default defineComponent({
   }
 
   &__audio {
-    //visibility: visible;
+    visibility: visible;
   }
 }
 </style>
