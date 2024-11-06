@@ -19,7 +19,7 @@
     "@vitejs/plugin-legacy": "^5.3.0",
     "@vitejs/plugin-vue": "^5.0.3",
     "autoprefixer": "^10.4.17",
-    "happy-dom": "^13.3.5",
+    "happy-dom": "^15.10.1",
     "sass": "^1.70.0",
     "terser": "^5.27.0",
     "typescript": "^5.3.3",
