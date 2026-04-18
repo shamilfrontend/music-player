@@ -40,24 +40,15 @@ export default defineComponent({
   },
 
   setup() {
-    const isPlaying = ref<boolean>(false);
     const audioElement = ref<Nullable<HTMLAudioElement>>(null);
-    const isListShown = ref<boolean>(false);
 
     const tracksStore = useTracksStore();
 
-    const tracks = computed(() => tracksStore.tracks);
     const currentTrack = computed(() => tracksStore.currentTrack);
-
-    const handleLogoutClick = () => {};
 
     return {
       audioElement,
-      isPlaying,
-      tracks,
-      currentTrack,
-      isListShown,
-      handleLogoutClick,
+      currentTrack
     };
   }
 });
