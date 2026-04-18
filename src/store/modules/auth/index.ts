@@ -13,29 +13,37 @@ export interface LoginCredentials {
 const useAuthStore = defineStore('auth', () => {
   const token = ref<Nullable<string>>(null);
   const error = ref<Nullable<string>>(null);
+  const isLoading = ref(false);
 
   const isAuth = computed<boolean>(() => Boolean(token.value));
 
-  const login = (credentials: LoginCredentials): void => {
+  const login = async (credentials: LoginCredentials): Promise<boolean> => {
     const trimmedLogin = credentials.login.trim();
+
+    isLoading.value = true;
 
     if (!trimmedLogin || !credentials.password) {
       error.value = 'Введите логин и пароль';
-      return;
+      isLoading.value = false;
+      return false;
     }
 
     error.value = null;
     token.value = nanoid();
+    isLoading.value = false;
+    return true;
   };
 
   const logout = (): void => {
     token.value = null;
     error.value = null;
+    isLoading.value = false;
   };
 
   return {
     token,
     error,
+    isLoading,
     isAuth,
     login,
     logout

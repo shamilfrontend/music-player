@@ -16,15 +16,15 @@ const currentTrack = computed(() => tracksStore.currentTrack);
 </script>
 
 <template>
-  <div class="app">
-    <div class="app__inner">
+  <div class="base-layout">
+    <div class="base-layout__inner">
       <the-header />
 
-      <div class="app__content">
+      <main class="base-layout__content">
         <slot />
-      </div>
+      </main>
 
-      <div class="app__footer">
+      <div class="base-layout__footer">
         <player-mini v-show="currentTrack" />
 
         <the-footer />
@@ -36,34 +36,40 @@ const currentTrack = computed(() => tracksStore.currentTrack);
 </template>
 
 <style lang="scss" scoped>
-.app {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 100%;
+.base-layout {
+  min-height: 100vh;
+  padding: var(--space-4);
 
   &__inner {
     display: flex;
     flex-direction: column;
-    max-width: 768px;
-    margin-left: auto;
-    margin-right: auto;
-    height: 100%;
+    max-width: var(--page-max-width);
+    min-height: calc(100vh - (var(--space-4) * 2));
+    margin: 0 auto;
+    border: 1px solid var(--color-border);
+    border-radius: 32px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent),
+      rgba(8, 17, 31, 0.9);
+    box-shadow: var(--shadow-lg);
     overflow: hidden;
+    backdrop-filter: blur(14px);
   }
 
   &__content {
-    flex-grow: 1;
-    overflow: auto;
-    height: calc(100vh - calc(var(--player-mini-height) + var(--player-menu-height)));
+    flex: 1;
+    padding: 0 var(--page-padding) var(--page-padding);
+    overflow-y: auto;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 22%);
   }
 
   &__footer {
     position: sticky;
     bottom: 0;
-    background-color: var(--dark-color);
+    z-index: 1;
+    background:
+      linear-gradient(180deg, rgba(8, 17, 31, 0), rgba(8, 17, 31, 0.92) 32%),
+      rgba(8, 17, 31, 0.92);
   }
 }
 </style>

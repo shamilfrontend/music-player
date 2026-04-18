@@ -3,12 +3,28 @@ import type { Router } from 'vue-router';
 
 import { createRouter, createWebHistory } from 'vue-router';
 
+import { store, useAuthStore } from '../store';
+
 import { routes } from './routes';
 
 const router = createRouter({
     history: createWebHistory(),
     routes,
     scrollBehavior: (_, __, savedPosition) => savedPosition ?? { left: 0, top: 0 },
+});
+
+router.beforeEach((to) => {
+    const authStore = useAuthStore(store);
+
+    if (to.meta.requiresAuth && !authStore.isAuth) {
+        return { name: 'LOGIN' };
+    }
+
+    if (to.name === 'LOGIN' && authStore.isAuth) {
+        return { name: 'HOME' };
+    }
+
+    return true;
 });
 
 const setupRouter = (app: App<Element>): Router => {

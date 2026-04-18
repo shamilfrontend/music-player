@@ -120,28 +120,28 @@ const handlePlayPauseBtnClick = (): void => {
   display: flex;
   align-items: center;
   margin: 0;
-  padding: 10px 20px;
+  padding: var(--space-4) var(--space-5);
   cursor: pointer;
   transition: all 0.2s ease-in;
   overflow: auto;
   user-select: none;
 
   &:hover {
-    background-color: var(--dark-color);
+    background-color: rgba(255, 255, 255, 0.03);
   }
 
   &__image {
     min-width: 48px;
     height: 48px;
-    margin-right: 16px;
+    margin-right: var(--space-4);
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: 14px;
   }
 
   &__content {
     flex-grow: 1;
     font-weight: 500;
-    color: var(--font-color);
+    color: var(--color-text);
   }
 
   &__name {
@@ -151,7 +151,7 @@ const handlePlayPauseBtnClick = (): void => {
 
   &__author {
     font-size: 12px;
-    opacity: 0.8;
+    color: var(--color-text-muted);
   }
 
   &__actions {
@@ -164,7 +164,7 @@ const handlePlayPauseBtnClick = (): void => {
 
   &__icon {
     font-size: 22px;
-    color: var(--font-color);
+    color: var(--color-text);
 
     &-loading {
       animation: track-icon-rotating 1s linear infinite;
@@ -172,7 +172,9 @@ const handlePlayPauseBtnClick = (): void => {
   }
 
   &_active {
-    background-color: var(--dark-color);
+    background:
+      linear-gradient(90deg, rgba(91, 140, 255, 0.12), transparent),
+      rgba(255, 255, 255, 0.04);
   }
 }
 </style>

@@ -1,33 +1,47 @@
 <script lang="ts" setup>
+import { useRouter } from 'vue-router';
+
+import { useAuthStore } from '../../store';
+
 defineOptions({ name: 'TheFooter' });
 
 const MENU_LIST = [
   {
     link: '/',
-    icon: 'fa-bars'
+    icon: 'fa-bars',
+    label: 'Главная'
   },
   {
     link: '/favorite',
-    icon: 'fa-heart'
+    icon: 'fa-heart',
+    label: 'Избранное'
   },
   {
     link: '/add',
-    icon: 'fa-plus'
+    icon: 'fa-plus',
+    label: 'Добавить'
   },
 ];
 
-const handleLogoutClick = (): void => {};
+const router = useRouter();
+const authStore = useAuthStore();
+
+const handleLogoutClick = (): void => {
+  authStore.logout();
+  router.push({ name: 'LOGIN' });
+};
 </script>
 
 <template>
-  <div class="the-footer">
+  <nav class="the-footer" aria-label="Основная навигация">
     <router-link
-      v-for="(menuItem, index) in MENU_LIST"
-      :key="index"
+      v-for="menuItem in MENU_LIST"
+      :key="menuItem.link"
       :to="menuItem.link"
       class="the-footer__btn"
     >
       <i :class="`fa ${menuItem.icon} fa-lg`" />
+      <span>{{ menuItem.label }}</span>
     </router-link>
 
     <button
@@ -36,25 +50,47 @@ const handleLogoutClick = (): void => {};
       @click="handleLogoutClick"
     >
       <i class="fa fa-sign-out fa-lg" />
+      <span>Выход</span>
     </button>
-  </div>
+  </nav>
 </template>
 
 <style lang="scss" scoped>
 .the-footer {
   display: flex;
+  align-items: center;
   justify-content: space-between;
+  gap: var(--space-2);
+  min-height: var(--player-menu-height);
+  padding: var(--space-3) var(--page-padding) var(--space-4);
 
   &__btn {
-    width: 100%;
-    padding: 18px;
-    color: var(--font-color);
-    font-size: 16px;
-    line-height: 24px;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    min-height: 56px;
+    padding: var(--space-2);
+    border: 1px solid transparent;
+    border-radius: 20px;
+    color: var(--color-text-muted);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.01em;
     text-align: center;
 
+    &:hover {
+      background-color: var(--color-surface-soft);
+      color: var(--color-text);
+    }
+
     &.router-link-exact-active {
-      color: var(--second-color);
+      border-color: var(--color-border);
+      background: linear-gradient(180deg, var(--color-primary-soft), rgba(255, 255, 255, 0.02));
+      color: var(--color-primary);
     }
   }
 }

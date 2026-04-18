@@ -90,7 +90,7 @@ watch(() => tracksStore.volume, () => {
       <div class="player-mini__info">
         <div class="player-mini__info-name">{{ currentTrack?.name }}</div>
         <div class="player-mini__info-author">
-          {{ currentTrack?.author }} Lorem ipsum dolor sit amet.
+          {{ currentTrack?.author }}
         </div>
       </div>
 
@@ -135,25 +135,33 @@ watch(() => tracksStore.volume, () => {
 <style lang="scss" scoped>
 .player-mini {
   min-height: var(--player-mini-height);
-  padding: 12px;
-  background-color: var(--second-color);
-  border-top: 1px solid var(--dark-color);
+  margin: 0 var(--page-padding);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(135deg, rgba(91, 140, 255, 0.24), rgba(127, 92, 255, 0.18)),
+    var(--color-surface-elevated);
+  box-shadow: var(--shadow-md);
 
   &__content {
     display: flex;
     align-items: center;
+    gap: var(--space-3);
   }
 
   &__image {
     display: block;
-    min-width: 48px;
-    height: 48px;
-    margin-right: 12px;
+    width: 52px;
+    min-width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    object-fit: cover;
   }
 
   &__info {
-    width: calc(100% - 150px);
-    color: var(--font-color);
+    min-width: 0;
+    color: var(--color-text);
 
     * {
       overflow: hidden;
@@ -162,11 +170,13 @@ watch(() => tracksStore.volume, () => {
     }
 
     &-name {
+      font-size: 15px;
       font-weight: 600;
     }
 
     &-author {
       font-size: 12px;
+      color: rgba(245, 247, 251, 0.72);
     }
   }
 
@@ -180,15 +190,11 @@ watch(() => tracksStore.volume, () => {
 
   &__icon {
     font-size: 28px;
-    color: var(--font-color);
+    color: var(--color-text);
 
     &-loading {
       animation: track-icon-rotating 1s linear infinite;
     }
-  }
-
-  &__audio {
-    visibility: visible;
   }
 }
 </style>

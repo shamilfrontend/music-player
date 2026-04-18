@@ -206,15 +206,17 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-color: var(--dark-color);
+  background:
+    radial-gradient(circle at top, rgba(91, 140, 255, 0.18), transparent 30%),
+    rgba(8, 17, 31, 0.98);
   height: 0;
   padding: 0;
   overflow: hidden;
-  transform: translatey(100%);
+  transform: translateY(100%);
   transition: all 0.4s ease;
 
   &__top {
-    width: 300px;
+    width: min(360px, 100%);
     margin-left: auto;
     margin-right: auto;
     margin-top: auto;
@@ -226,7 +228,7 @@ onUnmounted(() => {
     align-items: center;
     justify-content: center;
     gap: 24px;
-    width: 300px;
+    width: min(360px, 100%);
     margin-left: auto;
     margin-right: auto;
   }
@@ -236,39 +238,41 @@ onUnmounted(() => {
     width: 100%;
     margin-top: auto;
     padding: 16px;
-    color: #fff;
+    color: var(--color-text-muted);
     font-size: 18px;
   }
 
   &__cover {
     position: relative;
-    margin: 0 auto 4px;
+    margin: 0 auto var(--space-4);
 
     img {
       width: 100%;
-      height: auto;
+      aspect-ratio: 1;
       display: block;
-      margin-right: auto;
-      margin-left: auto;
+      margin: 0 auto;
+      object-fit: cover;
+      border-radius: 32px;
+      box-shadow: var(--shadow-lg);
     }
   }
 
   &__progress {
     & > progress {
       border: 0;
-      color: #ed5483;
+      color: var(--color-primary);
       height: 5px;
       width: 100%;
       appearance: none;
 
       &::-webkit-progress-value {
-        background-color: #b8235a;
+        background: linear-gradient(90deg, var(--color-primary), var(--color-primary-strong));
         border-radius: 10px;
       }
 
       &::-webkit-progress-bar {
         height: 5px;
-        background-color: #d8d8d8;
+        background-color: var(--color-surface-soft);
         border-radius: 10px;
       }
     }
@@ -279,11 +283,11 @@ onUnmounted(() => {
     justify-content: space-between;
     padding: 8px 0;
     font-size: 12px;
-    color: var(--font-color);
+    color: var(--color-text-muted);
   }
 
   &__info {
-    color: var(--font-color);
+    color: var(--color-text);
     text-align: center;
 
     &-name {
@@ -301,7 +305,7 @@ onUnmounted(() => {
     top: 0;
     height: 100%;
     padding: 0 16px 16px;
-    transform: translatey(0);
+    transform: translateY(0);
     transition: all 0.4s ease;
   }
 }
@@ -316,9 +320,10 @@ onUnmounted(() => {
   &__btn {
     width: 40px;
     height: 40px;
-    color: #fff;
+    color: var(--color-text);
     border-radius: 12px;
-    background-color: var(--second-color);
+    background-color: var(--color-surface-elevated);
+    border: 1px solid var(--color-border);
 
     &:disabled {
       opacity: 0.5;
@@ -332,7 +337,7 @@ onUnmounted(() => {
 
   &__icon {
     font-size: 28px;
-    color: var(--font-color);
+    color: var(--color-text);
 
     &-loading {
       animation: track-icon-rotating 1s linear infinite;
@@ -343,9 +348,10 @@ onUnmounted(() => {
     width: 60px;
     height: 60px;
     font-size: 20px;
-    color: #fff;
-    border-radius: 12px;
-    background-color: var(--secong);
+    color: var(--color-text);
+    border-radius: 18px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-strong));
+    box-shadow: var(--shadow-md);
   }
 }
 
@@ -360,7 +366,7 @@ onUnmounted(() => {
     display: inline-block;
     font-size: 8px;
     line-height: 12px;
-    color: #fff;
+    color: var(--color-text);
   }
 
   &__bar {
@@ -369,14 +375,14 @@ onUnmounted(() => {
     width: 100%;
     margin: 0 8px;
     overflow: hidden;
-    background-color: var(--dark-color-medium);
+    background-color: var(--color-surface-soft);
 
     &-fill {
       display: block;
       position: relative;
       width: 0;
       height: 100%;
-      background-color: #6343e4;
+      background-color: var(--color-primary);
       border-radius: 6px;
     }
   }
@@ -388,8 +394,8 @@ onUnmounted(() => {
   width: 100%;
   height: 7px;
   border-radius: 5px;
-  background-color: #fff;
-  background-image: linear-gradient(to right, var(--secong), var(--secong));
+  background-color: var(--color-surface-soft);
+  background-image: linear-gradient(to right, var(--color-primary), var(--color-primary));
   background-size: 100% 100%;
   background-repeat: no-repeat;
 
@@ -398,9 +404,9 @@ onUnmounted(() => {
     height: 26px;
     width: 26px;
     border-radius: 50%;
-    background-color: var(--second-color);
+    background-color: var(--color-primary);
     cursor: ew-resize;
-    box-shadow: 0 0 2px 0 var(--dark-color-light);
+    box-shadow: 0 0 2px 0 var(--color-text-soft);
     transition: background .3s ease-in-out;
   }
 
