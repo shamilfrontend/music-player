@@ -12,6 +12,7 @@ const useTracksStore = defineStore('tracks', () => {
   const currentSeconds = ref(0);
   const durationSeconds = ref(0);
   const volume = ref(100);
+  const pendingSeekSeconds = ref<Nullable<number>>(null);
 
   const state = reactive({
     isPlaying: false,
@@ -32,15 +33,27 @@ const useTracksStore = defineStore('tracks', () => {
     track.favorite = !track.favorite;
   }
 
+  function seekToSeconds(seconds: number): void {
+    const duration = durationSeconds.value;
+
+    if (!duration || !Number.isFinite(seconds)) return;
+
+    const clamped = Math.min(Math.max(0, seconds), duration);
+
+    pendingSeekSeconds.value = clamped;
+  }
+
   return {
     tracks,
     currentTrack,
     currentSeconds,
     durationSeconds,
     volume,
+    pendingSeekSeconds,
     state,
     favoriteTracks,
-    toggleFavorite
+    toggleFavorite,
+    seekToSeconds
   };
 });
 

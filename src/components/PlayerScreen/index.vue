@@ -1,14 +1,16 @@
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, watch } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+
+import type { Nullable } from '../../types';
 
 import { useTracksStore } from '../../store';
 
 import { PlayerEqualizer } from './PlayerEqualizer';
 
 function convertTimeHHMMSS(value: number): string {
-  const hhmmss = new Date(value * 1000).toISOString().substr(11, 8);
+  const hhmmss = new Date(value * 1000).toISOString().slice(11, 19);
 
-  return hhmmss.indexOf("00:") === 0 ? hhmmss.substr(3) : hhmmss;
+  return hhmmss.startsWith('00:') ? hhmmss.slice(3) : hhmmss;
 }
 
 defineOptions({ name: 'PlayerScreen' });
@@ -42,6 +44,29 @@ const progressValue = computed(() => {
   return Number(tracksStore.currentSeconds / tracksStore.durationSeconds * 100);
 });
 
+const dialogLabelledBy = computed(() =>
+  currentTrack.value ? 'player-screen-title' : undefined
+);
+
+const dialogAriaLabel = computed(() =>
+  currentTrack.value ? undefined : 'Плеер'
+);
+
+const previousActiveElement = ref<Nullable<Element>>(null);
+const closeButtonRef = ref<HTMLButtonElement | null>(null);
+
+const handleProgressClick = (event: MouseEvent): void => {
+  const duration = tracksStore.durationSeconds;
+
+  if (!duration) return;
+
+  const target = event.currentTarget as HTMLElement;
+  const rect = target.getBoundingClientRect();
+  const ratio = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
+
+  tracksStore.seekToSeconds(ratio * duration);
+};
+
 const handlePlayBtnClick = (): void => {
   tracksStore.state.isPlaying = !isPlaying.value;
 };
@@ -69,8 +94,24 @@ const setBodyScrollLocked = (locked: boolean): void => {
 
 watch(
   () => tracksStore.state.isPlayerScreenShown,
-  (shown) => {
+  async (shown) => {
     setBodyScrollLocked(shown);
+
+    if (shown) {
+      previousActiveElement.value = document.activeElement;
+      await nextTick();
+      closeButtonRef.value?.focus();
+
+      return;
+    }
+
+    const restore = previousActiveElement.value;
+
+    previousActiveElement.value = null;
+
+    if (restore instanceof HTMLElement) {
+      restore.focus();
+    }
   },
   { immediate: true }
 );
@@ -87,81 +128,98 @@ onUnmounted(() => {
 
 <template>
   <div
-    ref="playerScreen"
     :class="playerScreenClasses"
+    role="dialog"
+    aria-modal="true"
+    :aria-labelledby="dialogLabelledBy"
+    :aria-label="dialogAriaLabel"
   >
-    <div class="player-screen__top">
-      <div class="player-screen__cover">
-        <img :src="currentTrack?.imageUrl" alt="" />
+    <div class="player-screen__body">
+      <div class="player-screen__top">
+        <div class="player-screen__cover">
+          <img :src="currentTrack?.imageUrl" alt="" />
 
-        <player-equalizer v-if="isPlaying && currentTrack" />
-      </div>
+          <player-equalizer v-if="isPlaying && currentTrack" />
+        </div>
 
-      <div class="player-screen__progress">
-        <progress
-          :value="progressValue"
-          max="100"
-        />
-      </div>
-
-      <div class="player-screen__times">
-        <div class="current-time">{{ currentSecondsConverted }}</div>
-        <div class="end-time">{{ durationSecondsConverted }}</div>
-      </div>
-    </div>
-
-    <div class="player-screen__bottom">
-      <div class="player-screen__info">
-        <p class="player-screen__info-name">{{ currentTrack?.name }}</p>
-        <p class="player-screen__info-author">{{ currentTrack?.author }}</p>
-      </div>
-
-      <div class="music-controls">
-        <button
-          v-if="isLoading"
-          type="button"
-          aria-label="Загрузка трека"
+        <div
+          class="player-screen__progress"
+          role="presentation"
+          @click="handleProgressClick"
         >
-          <i
-            class="music-controls__icon music-controls__icon-loading fa fa-spinner"
-            aria-hidden="true"
+          <progress
+            :value="progressValue"
+            max="100"
           />
-        </button>
+        </div>
 
-        <template v-else>
+        <div class="player-screen__times">
+          <div class="current-time">{{ currentSecondsConverted }}</div>
+          <div class="end-time">{{ durationSecondsConverted }}</div>
+        </div>
+      </div>
+
+      <div class="player-screen__bottom">
+        <div class="player-screen__info">
+          <p
+            v-if="currentTrack"
+            id="player-screen-title"
+            class="player-screen__info-name"
+          >
+            {{ currentTrack.name }}
+          </p>
+          <p class="player-screen__info-author">{{ currentTrack?.author }}</p>
+        </div>
+
+        <div class="music-controls">
           <button
+            v-if="isLoading"
             type="button"
-            class="music-controls__play-pause"
-            :aria-label="isPlaying ? 'Пауза' : 'Воспроизведение'"
-            @click="handlePlayBtnClick"
+            aria-label="Загрузка трека"
           >
             <i
-              class="fa"
-              :class="isPlaying ? 'fa-pause' : 'fa-play'"
+              class="music-controls__icon music-controls__icon-loading fa fa-spinner"
               aria-hidden="true"
             />
           </button>
-        </template>
-      </div>
 
-      <label class="player-screen__volume">
-        <span class="player-screen__volume-label">Громкость</span>
-        <input
-          :value="volume"
-          type="range"
-          class="volume-slider"
-          :style="{ 'background-size': `${volume}% 100%` }"
-          min="0"
-          max="100"
-          aria-label="Громкость"
-          @input="handleVolumeInput"
-        />
-      </label>
+          <template v-else>
+            <button
+              type="button"
+              class="music-controls__play-pause"
+              :aria-label="isPlaying ? 'Пауза' : 'Воспроизведение'"
+              @click="handlePlayBtnClick"
+            >
+              <i
+                class="fa"
+                :class="isPlaying ? 'fa-pause' : 'fa-play'"
+                aria-hidden="true"
+              />
+            </button>
+          </template>
+        </div>
+
+        <label class="player-screen__volume">
+          <span class="player-screen__volume-label">Громкость</span>
+          <input
+            :value="volume"
+            type="range"
+            class="volume-slider"
+            :style="{ 'background-size': `${volume}% 100%` }"
+            min="0"
+            max="100"
+            aria-label="Громкость"
+            @input="handleVolumeInput"
+          />
+        </label>
+      </div>
     </div>
 
     <button
+      ref="closeButtonRef"
       class="player-screen__close"
       type="button"
+      aria-label="Свернуть плеер"
       @click="closePlayerScreen"
     >
       <i
@@ -179,11 +237,10 @@ onUnmounted(() => {
   z-index: 2;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   height: 100vh;
   height: 100dvh;
   max-height: 100dvh;
-  padding: 0;
+  padding: 24px;
   overflow: hidden;
   pointer-events: none;
   background:
@@ -191,6 +248,18 @@ onUnmounted(() => {
     rgba(8, 17, 31, 0.98);
   transform: translateY(100%);
   transition: transform 0.4s ease;
+
+  &__body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
 
   &__top {
     width: min(360px, 100%);
@@ -206,14 +275,16 @@ onUnmounted(() => {
     justify-content: center;
     gap: 24px;
     width: min(360px, 100%);
-    margin-left: auto;
     margin-right: auto;
+    margin-bottom: auto;
+    margin-left: auto;
   }
 
   &__close {
     display: block;
+    flex-shrink: 0;
     width: 100%;
-    margin-top: auto;
+    margin-top: 0;
     padding: 16px;
     color: var(--color-text-muted);
     font-size: 18px;
@@ -235,6 +306,8 @@ onUnmounted(() => {
   }
 
   &__progress {
+    cursor: pointer;
+
     & > progress {
       border: 0;
       color: var(--color-primary);
@@ -250,6 +323,11 @@ onUnmounted(() => {
       &::-webkit-progress-bar {
         height: 5px;
         background-color: var(--color-surface-soft);
+        border-radius: 10px;
+      }
+
+      &::-moz-progress-bar {
+        background: linear-gradient(90deg, var(--color-primary), var(--color-primary-strong));
         border-radius: 10px;
       }
     }
@@ -279,7 +357,6 @@ onUnmounted(() => {
   }
 
   &_active {
-    padding: 0 16px max(16px, env(safe-area-inset-bottom, 0));
     transform: translateY(0);
     pointer-events: auto;
   }

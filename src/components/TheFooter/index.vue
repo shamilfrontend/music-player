@@ -64,6 +64,9 @@ const handleLogoutClick = (): void => {
   gap: var(--space-2);
   min-height: var(--player-menu-height);
   padding: var(--space-3) var(--page-padding) var(--space-4);
+  background:
+    linear-gradient(180deg, rgba(8, 17, 31, 0), rgba(8, 17, 31, 0.92) 32%),
+    rgba(8, 17, 31, 0.92);
 
   &__btn {
     display: flex;

@@ -67,6 +67,25 @@ watch(() => tracksStore.volume, () => {
 
   audio.value.volume = tracksStore.volume / 100;
 });
+
+watch(
+  () => tracksStore.pendingSeekSeconds,
+  (seconds) => {
+    if (seconds === null || seconds === undefined) return;
+
+    const element = audio.value;
+
+    if (!element) {
+      tracksStore.pendingSeekSeconds = null;
+
+      return;
+    }
+
+    element.currentTime = seconds;
+    tracksStore.currentSeconds = seconds;
+    tracksStore.pendingSeekSeconds = null;
+  }
+);
 </script>
 
 <template>

@@ -85,9 +85,6 @@ const currentTrack = computed(() => tracksStore.currentTrack);
     width: min(100%, var(--page-max-width));
     padding-bottom: env(safe-area-inset-bottom, 0);
     translate: -50% 0;
-    background:
-      linear-gradient(180deg, rgba(8, 17, 31, 0), rgba(8, 17, 31, 0.92) 32%),
-      rgba(8, 17, 31, 0.92);
   }
 }
 </style>
