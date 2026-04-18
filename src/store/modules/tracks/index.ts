@@ -1,37 +1,40 @@
+import { computed, reactive, ref } from 'vue';
+
 import { defineStore } from 'pinia';
 
-import { tracks } from './constants';
-import type { Track, TracksState } from './types';
+import { tracks as tracksList } from './constants';
+import type { Track } from './types';
+import type { Nullable } from '../../../types';
 
-const useTracksStore = defineStore({
-	id: 'tracks',
+const useTracksStore = defineStore('tracks', () => {
+  const tracks = ref<Track[]>(tracksList);
+  const currentTrack = ref<Nullable<Track>>(null);
+  const currentSeconds = ref(0);
+  const durationSeconds = ref(0);
+  const volume = ref(100);
 
-	state: (): TracksState => ({
-		tracks,
+  const state = reactive({
+    isPlaying: false,
+    isLooping: false,
+    isPlayerScreenShown: false,
+    isLoadingTrack: false
+  });
 
-		currentTrack: null,
+  const favoriteTracks = computed<Track[]>(() =>
+    tracks.value.filter(({ favorite }) => Boolean(favorite))
+  );
 
-		currentSeconds: 0,
-		durationSeconds: 0,
-		volume: 100,
-
-		state: {
-			isPlaying: false,
-			isLooping: false,
-			isPlayerScreenShown: false,
-			isLoadingTrack: false,
-		},
-	}),
-
-	getters: {
-		favoriteTracks(): Track[] {
-			return this.tracks.filter(({favorite}) => Boolean(favorite));
-		},
-	},
-
-	actions: {}
+  return {
+    tracks,
+    currentTrack,
+    currentSeconds,
+    durationSeconds,
+    volume,
+    state,
+    favoriteTracks
+  };
 });
 
 export default useTracksStore;
-export { useTracksStore }
-export type { Track }
+export { useTracksStore };
+export type { Track };

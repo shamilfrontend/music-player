@@ -1,19 +1,18 @@
+import { computed, ref } from 'vue';
+
 import { defineStore } from 'pinia';
 
-const useAuthStore = defineStore({
-    id: 'auth',
+import type { Nullable } from '../../../types';
 
-    state: () => ({
-        token: null
-    }),
+const useAuthStore = defineStore('auth', () => {
+  const token = ref<Nullable<string>>(null);
 
-    getters: {
-        isAuth(): boolean {
-            return Boolean(this.token);
-        },
-    },
+  const isAuth = computed<boolean>(() => Boolean(token.value));
 
-    actions: {}
+  return {
+    token,
+    isAuth
+  };
 });
 
 export default useAuthStore;
