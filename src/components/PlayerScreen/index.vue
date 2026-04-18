@@ -5,8 +5,6 @@ import type { Nullable } from '../../types';
 
 import { useTracksStore } from '../../store';
 
-import { PlayerEqualizer } from './PlayerEqualizer';
-
 function convertTimeHHMMSS(value: number): string {
   const hhmmss = new Date(value * 1000).toISOString().slice(11, 19);
 
@@ -53,7 +51,6 @@ const dialogAriaLabel = computed(() =>
 );
 
 const previousActiveElement = ref<Nullable<Element>>(null);
-const closeButtonRef = ref<HTMLButtonElement | null>(null);
 
 const handleProgressClick = (event: MouseEvent): void => {
   const duration = tracksStore.durationSeconds;
@@ -100,7 +97,6 @@ watch(
     if (shown) {
       previousActiveElement.value = document.activeElement;
       await nextTick();
-      closeButtonRef.value?.focus();
 
       return;
     }
@@ -138,8 +134,6 @@ onUnmounted(() => {
       <div class="player-screen__top">
         <div class="player-screen__cover">
           <img :src="currentTrack?.imageUrl" alt="" />
-
-          <player-equalizer v-if="isPlaying && currentTrack" />
         </div>
 
         <div
@@ -214,19 +208,6 @@ onUnmounted(() => {
         </label>
       </div>
     </div>
-
-    <button
-      ref="closeButtonRef"
-      class="player-screen__close"
-      type="button"
-      aria-label="Свернуть плеер"
-      @click="closePlayerScreen"
-    >
-      <i
-        class="fa fa-arrow-down"
-        aria-hidden="true"
-      />
-    </button>
   </div>
 </template>
 
@@ -243,9 +224,7 @@ onUnmounted(() => {
   padding: 24px;
   overflow: hidden;
   pointer-events: none;
-  background:
-    radial-gradient(circle at top, rgba(91, 140, 255, 0.18), transparent 30%),
-    rgba(8, 17, 31, 0.98);
+  background: radial-gradient(circle at top, rgba(91, 140, 255, 0.18), transparent 30%), rgba(8, 17, 31, 0.98);
   transform: translateY(100%);
   transition: transform 0.4s ease;
 
@@ -278,16 +257,6 @@ onUnmounted(() => {
     margin-right: auto;
     margin-bottom: auto;
     margin-left: auto;
-  }
-
-  &__close {
-    display: block;
-    flex-shrink: 0;
-    width: 100%;
-    margin-top: 0;
-    padding: 16px;
-    color: var(--color-text-muted);
-    font-size: 18px;
   }
 
   &__cover {

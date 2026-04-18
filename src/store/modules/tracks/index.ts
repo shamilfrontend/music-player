@@ -1,4 +1,4 @@
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 
 import { defineStore } from 'pinia';
 
@@ -6,12 +6,50 @@ import { tracks as tracksList } from './constants';
 import type { Track } from './types';
 import type { Nullable } from '../../../types';
 
+const VOLUME_STORAGE_KEY = 'music-player-volume';
+
+function readStoredVolume(): number {
+  if (typeof window === 'undefined') {
+    return 100;
+  }
+
+  try {
+    const raw = window.localStorage.getItem(VOLUME_STORAGE_KEY);
+
+    if (raw === null) {
+      return 100;
+    }
+
+    const parsed = Number(raw);
+
+    if (!Number.isFinite(parsed)) {
+      return 100;
+    }
+
+    return Math.min(100, Math.max(0, Math.round(parsed)));
+  } catch {
+    return 100;
+  }
+}
+
+function writeStoredVolume(value: number): void {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(VOLUME_STORAGE_KEY, String(value));
+  } catch {
+    // quota / приватный режим
+  }
+}
+
 const useTracksStore = defineStore('tracks', () => {
   const tracks = ref<Track[]>(tracksList);
   const currentTrack = ref<Nullable<Track>>(null);
   const currentSeconds = ref(0);
   const durationSeconds = ref(0);
-  const volume = ref(100);
+  const volume = ref(readStoredVolume());
   const pendingSeekSeconds = ref<Nullable<number>>(null);
 
   const state = reactive({
@@ -42,6 +80,10 @@ const useTracksStore = defineStore('tracks', () => {
 
     pendingSeekSeconds.value = clamped;
   }
+
+  watch(volume, (value) => {
+    writeStoredVolume(value);
+  });
 
   return {
     tracks,
