@@ -7,6 +7,10 @@ const MENU_LIST = [
     icon: 'fa-bars'
   },
   {
+    link: '/favorite',
+    icon: 'fa-heart'
+  },
+  {
     link: '/add',
     icon: 'fa-plus'
   },
@@ -45,7 +49,7 @@ const handleLogoutClick = (): void => {};
     width: 100%;
     padding: 18px;
     color: var(--font-color);
-    font-size: 20px;
+    font-size: 16px;
     line-height: 24px;
     text-align: center;
 
