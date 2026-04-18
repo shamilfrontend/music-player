@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted } from 'vue';
+import { computed, onMounted, onUnmounted, watch } from 'vue';
 
 import { useTracksStore } from '../../store';
 
@@ -61,12 +61,27 @@ const handleEscapeKeyDown = (event: KeyboardEvent): void => {
   }
 };
 
+const setBodyScrollLocked = (locked: boolean): void => {
+  const overflow = locked ? 'hidden' : '';
+  document.body.style.overflow = overflow;
+  document.documentElement.style.overflow = overflow;
+};
+
+watch(
+  () => tracksStore.state.isPlayerScreenShown,
+  (shown) => {
+    setBodyScrollLocked(shown);
+  },
+  { immediate: true }
+);
+
 onMounted(() => {
   document.addEventListener('keydown', handleEscapeKeyDown);
 });
 
 onUnmounted(() => {
   document.removeEventListener('keydown', handleEscapeKeyDown);
+  setBodyScrollLocked(false);
 });
 </script>
 
@@ -159,22 +174,23 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .player-screen {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  left: 0;
+  position: fixed;
+  inset: 0;
   z-index: 2;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
+  padding: 0;
+  overflow: hidden;
+  pointer-events: none;
   background:
     radial-gradient(circle at top, rgba(91, 140, 255, 0.18), transparent 30%),
     rgba(8, 17, 31, 0.98);
-  height: 0;
-  padding: 24px;
-  overflow: hidden;
   transform: translateY(100%);
-  transition: all 0.4s ease;
+  transition: transform 0.4s ease;
 
   &__top {
     width: min(360px, 100%);
@@ -263,11 +279,9 @@ onUnmounted(() => {
   }
 
   &_active {
-    top: 0;
-    height: 100%;
-    padding: 0 16px 16px;
+    padding: 0 16px max(16px, env(safe-area-inset-bottom, 0));
     transform: translateY(0);
-    transition: all 0.4s ease;
+    pointer-events: auto;
   }
 }
 
