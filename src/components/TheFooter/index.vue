@@ -1,3 +1,20 @@
+<script lang="ts" setup>
+defineOptions({ name: 'TheFooter' });
+
+const MENU_LIST = [
+  {
+    link: '/',
+    icon: 'fa-bars'
+  },
+  {
+    link: '/add',
+    icon: 'fa-plus'
+  },
+];
+
+const handleLogoutClick = (): void => {};
+</script>
+
 <template>
   <div class="the-footer">
     <router-link
@@ -18,40 +35,6 @@
     </button>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-import { useTelegram } from '../../hooks/useTelegram';
-
-const MENU_LIST = [
-  {
-    link: '/',
-    icon: 'fa-bars'
-  },
-  // {
-  //   link: '/add',
-  //   icon: 'fa-plus'
-  // },
-];
-
-export default defineComponent({
-  name: 'TheFooter',
-
-  setup() {
-    const handleLogoutClick = (): void => {
-      const { onClose } = useTelegram();
-
-      onClose();
-    };
-
-    return {
-      MENU_LIST,
-      handleLogoutClick
-    }
-  }
-});
-</script>
 
 <style lang="scss" scoped>
 .the-footer {

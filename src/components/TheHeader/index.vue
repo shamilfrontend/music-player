@@ -1,26 +1,12 @@
+<script lang="ts" setup>
+defineOptions({ name: 'TheHeader' })
+</script>
+
 <template>
   <header class="the-header">
-    <div class="the-header__title">Привет, {{ userName }} 😉</div>
+    <div class="the-header__title">Music player</div>
   </header>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-import { useTelegram } from '../../hooks/useTelegram';
-
-export default defineComponent({
-  name: 'TheHeader',
-
-  setup() {
-    const { user } = useTelegram();
-
-    return {
-      userName: user?.username ?? 'Неизвестный'
-    }
-  }
-});
-</script>
 
 <style lang="scss" scoped>
 .the-header {
@@ -32,6 +18,7 @@ export default defineComponent({
     font-size: 16px;
     font-weight: 500;
     text-align: center;
+    text-transform: uppercase;
   }
 }
 </style>

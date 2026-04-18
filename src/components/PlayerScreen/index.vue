@@ -1,3 +1,75 @@
+<script lang="ts" setup>
+import { computed, onMounted, onUnmounted } from 'vue';
+
+import { useTracksStore } from '../../store';
+
+import { PlayerEquilizer } from './PlayerEquilizer';
+
+function convertTimeHHMMSS(value: number): string {
+  const hhmmss = new Date(value * 1000).toISOString().substr(11, 8);
+
+  return hhmmss.indexOf("00:") === 0 ? hhmmss.substr(3) : hhmmss;
+}
+
+defineOptions({ name: 'PlayerScreen' });
+
+const tracksStore = useTracksStore();
+
+const playerScreenClasses = computed<Record<string, boolean>>(() => ({
+  'player-screen': true,
+  'player-screen_active': tracksStore.state.isPlayerScreenShown
+}));
+
+const isPlaying = computed<boolean>(() => tracksStore.state.isPlaying);
+
+const currentTrack = computed(() => tracksStore.currentTrack);
+
+const isLoading = computed<boolean>(() => tracksStore.state.isLoadingTrack);
+
+const volume = computed<number>(() => tracksStore.volume);
+
+const currentSecondsConverted = computed(
+  () => convertTimeHHMMSS(tracksStore.currentSeconds)
+);
+
+const durationSecondsConverted = computed(
+  () => convertTimeHHMMSS(tracksStore.durationSeconds)
+);
+
+const progressValue = computed(() => {
+  if (!tracksStore.currentSeconds && !tracksStore.durationSeconds) return 0;
+
+  return Number(tracksStore.currentSeconds / tracksStore.durationSeconds * 100);
+});
+
+const handlePlayBtnClick = (): void => {
+  tracksStore.state.isPlaying = !isPlaying.value;
+};
+
+const handleVolumeInput = (event: Event): void => {
+  const { value } = event.target as HTMLInputElement;
+  tracksStore.volume = Number(value);
+};
+
+const closePlayerScreen = (): void => {
+  tracksStore.state.isPlayerScreenShown = false;
+};
+
+const handleEscapeKeyDown = (event: KeyboardEvent): void => {
+  if (event.key === 'Escape') {
+    closePlayerScreen();
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('keydown', handleEscapeKeyDown);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', handleEscapeKeyDown);
+});
+</script>
+
 <template>
   <div
     ref="playerScreen"
@@ -123,99 +195,6 @@
     </button>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, computed, onMounted, onUnmounted } from 'vue';
-import { useTracksStore } from '../../store';
-
-import { PlayerEquilizer } from './PlayerEquilizer'
-
-function convertTimeHHMMSS(value: number): string {
-  let hhmmss = new Date(value * 1000).toISOString().substr(11, 8);
-
-  return hhmmss.indexOf("00:") === 0 ? hhmmss.substr(3) : hhmmss;
-}
-
-export default defineComponent({
-  name: 'PlayerScreen',
-
-  components: {
-    PlayerEquilizer
-  },
-
-  setup() {
-    const tracksStore = useTracksStore();
-
-    const playerScreenClasses = computed<Record<string, boolean>>(() => ({
-      'player-screen': true,
-      'player-screen_active': tracksStore.state.isPlayerScreenShown
-    }));
-
-    const isPlaying = computed<boolean>(() => tracksStore.state.isPlaying);
-
-    const currentTrack = computed(() => tracksStore.currentTrack);
-
-    const isLoading = computed<boolean>(() => tracksStore.state.isLoadingTrack);
-
-    const volume = computed<number>(() => tracksStore.volume);
-
-    const currentSecondsConverted = computed(
-      () => convertTimeHHMMSS(tracksStore.currentSeconds)
-    );
-
-    const durationSecondsConverted = computed(
-      () => convertTimeHHMMSS(tracksStore.durationSeconds)
-    );
-
-    const progressValue = computed(() => {
-      if (!tracksStore.currentSeconds && !tracksStore.durationSeconds) return 0;
-
-      return Number(tracksStore.currentSeconds / tracksStore.durationSeconds * 100)
-    });
-
-    const handlePlayBtnClick = (): void => {
-      tracksStore.state.isPlaying = !isPlaying.value;
-    };
-
-    const handleVolumeInput = (event: Event): void => {
-      const value = (event.target as HTMLInputElement).value;
-      tracksStore.volume = Number(value);
-    };
-
-    const closePlayerScreen = (): void => {
-      tracksStore.state.isPlayerScreenShown = false;
-    };
-
-    const handleEscapeKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') {
-        closePlayerScreen()
-      }
-    };
-
-    onMounted(() => {
-      document.addEventListener('keydown', handleEscapeKeyDown);
-    });
-
-    onUnmounted(() => {
-      document.removeEventListener('keydown', handleEscapeKeyDown);
-    });
-
-    return {
-      isPlaying,
-      currentTrack,
-      isLoading,
-      volume,
-      playerScreenClasses,
-      currentSecondsConverted,
-      durationSecondsConverted,
-      progressValue,
-      handlePlayBtnClick,
-      handleVolumeInput,
-      closePlayerScreen,
-    }
-  }
-});
-</script>
 
 <style lang="scss" scoped>
 .player-screen {

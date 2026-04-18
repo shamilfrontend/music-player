@@ -1,3 +1,64 @@
+<script lang="ts" setup>
+import { computed } from 'vue';
+
+import { useTracksStore } from '../../store';
+import type { ClassValue } from '../../types';
+
+import type {
+  TrackItemPropTrack,
+  TrackItemProps,
+  CurrentTrack
+} from './types';
+
+defineOptions({ name: 'TrackItem' });
+
+const props = withDefaults(defineProps<TrackItemProps>(), {
+  track: () => ({}) as TrackItemPropTrack
+});
+
+const tracksStore = useTracksStore();
+
+const isPlaying = computed<boolean>(() => tracksStore.state.isPlaying);
+
+const currentTrack = computed<CurrentTrack>(() => tracksStore.currentTrack);
+
+const isCurrentTrackActive = computed<boolean>(
+  () => isPlaying.value && props.track.id === currentTrack.value?.id
+);
+
+const isLoading = computed<boolean>(
+  () => tracksStore.state.isLoadingTrack && props.track.id === currentTrack.value?.id
+);
+
+const trackItemClasses = computed<ClassValue>(() => ({
+  'track-item': true,
+  'track-item_active': isCurrentTrackActive.value
+}));
+
+const favoriteIconClasses = computed<string>(
+  () => props.track.favorite ? 'fa-heart' : 'fa-heart-o'
+);
+
+const playPauseIconClasses = computed<string>(
+  () => isCurrentTrackActive.value ? 'fa-pause' : 'fa-play'
+);
+
+const handleTrackClick = (): void => {
+  if (isPlaying.value && currentTrack.value?.id === props.track.id) {
+    tracksStore.state.isPlaying = false;
+    return;
+  }
+
+  tracksStore.currentTrack = props.track;
+
+  tracksStore.state.isPlaying = true;
+};
+
+const handlePlayPauseBtnClick = (): void => {
+  tracksStore.state.isPlaying = !isPlaying.value;
+};
+</script>
+
 <template>
   <div
     :class="trackItemClasses"
@@ -53,86 +114,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
-import type { PropType } from 'vue';
-
-import { useTracksStore } from '../../store';
-import type { ClassValue } from '../../types';
-
-import type {
-  TrackItemPropTrack,
-  TrackItemProps,
-  CurrentTrack,
-  TrackItemInstance
-} from './types';
-
-export default defineComponent({
-  name: 'TrackItem',
-
-  props: {
-    track: {
-      type: Object as PropType<TrackItemPropTrack>,
-      default: () => ({})
-    }
-  },
-
-  setup(props: TrackItemProps): TrackItemInstance {
-    const tracksStore = useTracksStore();
-
-    const isPlaying = computed<boolean>(() => tracksStore.state.isPlaying);
-
-    const currentTrack = computed<CurrentTrack>(() => tracksStore.currentTrack);
-
-    const isCurrentTrackActive = computed<boolean>(
-      () => isPlaying.value && props.track.id === currentTrack.value?.id
-    );
-
-    const isLoading = computed<boolean>(
-      () => tracksStore.state.isLoadingTrack && props.track.id === currentTrack.value?.id
-    );
-
-    const trackItemClasses = computed<ClassValue>(() => ({
-      'track-item': true,
-      'track-item_active': isCurrentTrackActive.value
-    }));
-
-    const favoriteIconClasses = computed<string>(
-      () => props.track.favorite ? 'fa-heart' : 'fa-heart-o'
-    );
-
-    const playPauseIconClasses = computed<string>(
-      () => isCurrentTrackActive.value ? 'fa-pause' : 'fa-play'
-    );
-
-    const handleTrackClick = (): void => {
-      if (isPlaying.value && currentTrack.value?.id === props.track.id) {
-        tracksStore.state.isPlaying = false;
-        return;
-      }
-
-      tracksStore.currentTrack = props.track;
-
-      tracksStore.state.isPlaying = true;
-    };
-
-    const handlePlayPauseBtnClick = (): void => {
-      tracksStore.state.isPlaying = !isPlaying.value;
-    };
-
-    return {
-      isPlaying,
-      isLoading,
-      trackItemClasses,
-      favoriteIconClasses,
-      playPauseIconClasses,
-      handleTrackClick,
-      handlePlayPauseBtnClick
-    }
-  }
-});
-</script>
 
 <style lang="scss" scoped>
 .track-item {

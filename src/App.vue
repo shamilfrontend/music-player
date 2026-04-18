@@ -1,3 +1,20 @@
+<script lang="ts" setup>
+import { computed } from 'vue';
+
+import { useTracksStore } from './store';
+
+import { TheHeader } from './components/TheHeader';
+import { PlayerMini } from './components/PlayerMini';
+import { PlayerScreen } from './components/PlayerScreen';
+import { TheFooter } from './components/TheFooter';
+
+defineOptions({ name: 'App' });
+
+const tracksStore = useTracksStore();
+
+const currentTrack = computed(() => tracksStore.currentTrack);
+</script>
+
 <template>
   <div class="app">
     <div class="app__inner">
@@ -17,42 +34,6 @@
     <player-screen />
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
-
-import { useTracksStore } from './store';
-import type { Nullable } from './types';
-
-import { TheHeader } from './components/TheHeader';
-import { PlayerMini } from './components/PlayerMini';
-import { PlayerScreen } from './components/PlayerScreen';
-import { TheFooter } from './components/TheFooter';
-
-export default defineComponent({
-  name: 'App',
-
-  components: {
-    TheHeader,
-    PlayerMini,
-    PlayerScreen,
-    TheFooter
-  },
-
-  setup() {
-    const audioElement = ref<Nullable<HTMLAudioElement>>(null);
-
-    const tracksStore = useTracksStore();
-
-    const currentTrack = computed(() => tracksStore.currentTrack);
-
-    return {
-      audioElement,
-      currentTrack
-    };
-  }
-});
-</script>
 
 <style lang="scss">
 @import "./assets/styles/base";

@@ -1,3 +1,7 @@
+<script lang="ts" setup>
+defineOptions({ name: 'AddTrackPage' });
+</script>
+
 <template>
   <div class="add-track-page">
     <div class="add-track-page__content">
@@ -5,14 +9,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'AddTrackPage'
-});
-</script>
 
 <style lang="scss" scoped>
 .add-track-page {

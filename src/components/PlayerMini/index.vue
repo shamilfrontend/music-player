@@ -1,3 +1,80 @@
+<script lang="ts" setup>
+import { computed, ref, watch } from 'vue';
+
+import type { Nullable } from '../../types';
+
+import { useTracksStore } from '../../store';
+
+defineOptions({ name: 'PlayerMini' });
+
+const tracksStore = useTracksStore();
+
+const audio = ref<Nullable<HTMLAudioElement>>(null);
+
+const isPlaying = computed<boolean>(() => tracksStore.state.isPlaying);
+const isLooping = computed<boolean>(() => tracksStore.state.isLooping);
+const currentTrack = computed(() => tracksStore.currentTrack);
+const isLoading = computed<boolean>(() => tracksStore.state.isLoadingTrack);
+
+const handleWrapperClick = (): void => {
+  tracksStore.state.isPlayerScreenShown = true;
+};
+
+const toggleTrack = (): void => {
+  // if (isPlaying.value) {
+  //   audio.value?.pause();
+  // } else {
+  //   audio.value?.play();
+  // }
+  //
+  // tracksStore.state.isPlaying = !isPlaying.value;
+};
+
+const handleTimeUpdate = () => {
+  if (!audio.value) return;
+
+  tracksStore.currentSeconds = Number(audio.value.currentTime);
+};
+
+const handleVolumeChange = (event: Event) => {
+  const value = (event.target as HTMLAudioElement);
+
+  tracksStore.volume = value.volume * 100;
+};
+
+const handleLoad = (): void => {
+  if (!audio.value) return;
+
+  if (audio.value.readyState >= 2) {
+    tracksStore.state.isLooping = true;
+    tracksStore.durationSeconds = Number(audio.value.duration);
+
+    audio.value.play();
+    tracksStore.state.isPlaying = true;
+    return;
+  }
+
+  throw new Error('Failed to load sound file.');
+};
+
+watch(() => tracksStore.state.isPlaying, (value: boolean) => {
+  if (!audio.value) return;
+
+  if (value && audio.value.readyState >= 2) {
+    audio.value.play();
+    return;
+  }
+
+  audio.value.pause();
+});
+
+watch(() => tracksStore.volume, () => {
+  if (!audio.value) return;
+
+  audio.value.volume = tracksStore.volume / 100;
+});
+</script>
+
 <template>
   <div
     class="player-mini"
@@ -54,104 +131,6 @@
     />
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, computed, ref, watch } from 'vue';
-
-import type { Nullable } from '../../types';
-
-import { useTracksStore } from '../../store';
-import type { PlayerMiniInstance } from './types';
-
-export default defineComponent({
-  name: 'PlayerMini',
-
-  setup(): PlayerMiniInstance {
-    const tracksStore = useTracksStore();
-
-    const audio = ref<Nullable<HTMLAudioElement>>(null);
-    const currentTime = ref<number>(0);
-
-    const isPlaying = computed<boolean>(() => tracksStore.state.isPlaying);
-    const isLooping = computed<boolean>(() => tracksStore.state.isLooping);
-    const currentTrack = computed(() => tracksStore.currentTrack);
-    const isPlayerScreenShown = computed<boolean>(() => tracksStore.state.isPlayerScreenShown);
-    const isLoading = computed<boolean>(() => tracksStore.state.isLoadingTrack);
-
-    const handleWrapperClick = (): void => {
-      tracksStore.state.isPlayerScreenShown = true;
-    };
-
-    const toggleTrack = (): void => {
-      // if (isPlaying.value) {
-      //   audio.value?.pause();
-      // } else {
-      //   audio.value?.play();
-      // }
-      //
-      // tracksStore.state.isPlaying = !isPlaying.value;
-    };
-
-    const handleTimeUpdate = () => {
-      if (!audio.value) return;
-
-      tracksStore.currentSeconds = Number(audio.value.currentTime);
-    };
-
-    const handleVolumeChange = (event: Event) => {
-      const value = (event.target as HTMLAudioElement);
-
-      tracksStore.volume = value.volume * 100;
-    };
-
-    const handleLoad = () => {
-      if (!audio.value) return;
-
-      if (audio.value.readyState >= 2) {
-        tracksStore.state.isLooping = true;
-        tracksStore.durationSeconds = Number(audio.value.duration);
-
-        audio.value.play();
-        return tracksStore.state.isPlaying = true;
-      }
-
-      throw new Error('Failed to load sound file.');
-    };
-
-    watch(() => tracksStore.state.isPlaying, (value: boolean) => {
-      if (!audio.value) return;
-
-      if (value && audio.value.readyState >= 2) {
-        audio.value.play();
-        return;
-      }
-
-      audio.value.pause();
-    });
-
-    watch(() => tracksStore.volume, () => {
-      if (!audio.value) return;
-
-      audio.value.volume = tracksStore.volume / 100;
-    });
-
-    return {
-      audio,
-      currentTime,
-      isPlaying,
-      isLooping,
-      currentTrack,
-      isPlayerScreenShown,
-      isLoading,
-      handleWrapperClick,
-      toggleTrack,
-      handleTimeUpdate,
-      handleVolumeChange,
-      handleLoad,
-    }
-  }
-})
-</script>
 
 <style lang="scss" scoped>
 .player-mini {

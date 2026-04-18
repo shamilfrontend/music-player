@@ -1,3 +1,15 @@
+<script lang="ts" setup>
+import { computed } from 'vue';
+
+import { useTracksStore } from '../../../store';
+
+defineOptions({ name: 'PlayerEquilizer' });
+
+const tracksStore = useTracksStore();
+
+const isPlaying = computed<boolean>(() => tracksStore.state.isPlaying);
+</script>
+
 <template>
   <svg xmlns="http://www.w3.org/2000/svg" class="equilizer">
     <g v-if="isPlaying">
@@ -21,25 +33,6 @@
     </g>
   </svg>
 </template>
-
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { useTracksStore } from '../../../store';
-
-export default defineComponent({
-  name: 'PlayerEquilizer',
-
-  setup() {
-    const tracksStore = useTracksStore();
-
-    const isPlaying = computed<boolean>(() => tracksStore.state.isPlaying);
-
-    return {
-      isPlaying
-    }
-  }
-});
-</script>
 
 <style lang="scss" scoped>
 $max: 100px;

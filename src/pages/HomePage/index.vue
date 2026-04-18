@@ -1,3 +1,17 @@
+<script lang="ts" setup>
+import { computed } from 'vue';
+
+import TrackItem from '../../components/TrackItem/index.vue';
+
+import { useTracksStore } from '../../store';
+
+defineOptions({ name: 'HomePage' });
+
+const tracksStore = useTracksStore();
+
+const tracks = computed(() => tracksStore.tracks);
+</script>
+
 <template>
   <div class="home-page">
     <track-item
@@ -8,32 +22,6 @@
     />
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, computed } from 'vue'
-
-import TrackItem from '../../components/TrackItem/index.vue';
-
-import { useTracksStore } from '../../store';
-
-export default defineComponent({
-  name: 'HomePage',
-
-  components: {
-    TrackItem
-  },
-
-  setup() {
-    const tracksStore = useTracksStore();
-
-    const tracks = computed(() => tracksStore.tracks);
-
-    return {
-      tracks
-    }
-  }
-})
-</script>
 
 <style lang="scss" scoped>
 .home-page {
