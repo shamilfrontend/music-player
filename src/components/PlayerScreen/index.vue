@@ -3,7 +3,7 @@ import { computed, onMounted, onUnmounted } from 'vue';
 
 import { useTracksStore } from '../../store';
 
-import { PlayerEquilizer } from './PlayerEquilizer';
+import { PlayerEqualizer } from './PlayerEqualizer';
 
 function convertTimeHHMMSS(value: number): string {
   const hhmmss = new Date(value * 1000).toISOString().substr(11, 8);
@@ -79,7 +79,7 @@ onUnmounted(() => {
       <div class="player-screen__cover">
         <img :src="currentTrack?.imageUrl" alt="" />
 
-        <player-equilizer v-if="false" />
+        <player-equalizer v-if="isPlaying && currentTrack" />
       </div>
 
       <div class="player-screen__progress">
@@ -105,6 +105,7 @@ onUnmounted(() => {
         <button
           v-if="isLoading"
           type="button"
+          aria-label="Загрузка трека"
         >
           <i
             class="music-controls__icon music-controls__icon-loading fa fa-spinner"
@@ -114,30 +115,9 @@ onUnmounted(() => {
 
         <template v-else>
           <button
-            class="music-controls__btn"
-            type="button"
-            disabled
-          >
-            <i
-              class="fa fa-repeat"
-              aria-hidden="true"
-            />
-          </button>
-
-          <button
-            class="music-controls__btn"
-            type="button"
-            disabled
-          >
-            <i
-              class="fa fa-backward"
-              aria-hidden="true"
-            />
-          </button>
-
-          <button
             type="button"
             class="music-controls__play-pause"
+            :aria-label="isPlaying ? 'Пауза' : 'Воспроизведение'"
             @click="handlePlayBtnClick"
           >
             <i
@@ -146,41 +126,22 @@ onUnmounted(() => {
               aria-hidden="true"
             />
           </button>
-
-          <button
-            class="music-controls__btn"
-            type="button"
-            disabled
-          >
-            <i
-              class="fa fa-forward"
-              aria-hidden="true"
-            />
-          </button>
-
-          <button
-            class="music-controls__btn"
-            type="button"
-            disabled
-          >
-            <i
-              class="fa fa-random"
-              aria-hidden="true"
-            />
-          </button>
         </template>
       </div>
 
-      <input
-        v-if="false"
-        v-model.lazy.number="volume"
-        type="range"
-        class="volume-slider"
-        :style="{ 'background-size': `${volume}% 100%` }"
-        min="0"
-        max="100"
-        @input="handleVolumeInput"
-      />
+      <label class="player-screen__volume">
+        <span class="player-screen__volume-label">Громкость</span>
+        <input
+          :value="volume"
+          type="range"
+          class="volume-slider"
+          :style="{ 'background-size': `${volume}% 100%` }"
+          min="0"
+          max="100"
+          aria-label="Громкость"
+          @input="handleVolumeInput"
+        />
+      </label>
     </div>
 
     <button
@@ -210,7 +171,7 @@ onUnmounted(() => {
     radial-gradient(circle at top, rgba(91, 140, 255, 0.18), transparent 30%),
     rgba(8, 17, 31, 0.98);
   height: 0;
-  padding: 0;
+  padding: 24px;
   overflow: hidden;
   transform: translateY(100%);
   transition: all 0.4s ease;
@@ -355,37 +316,16 @@ onUnmounted(() => {
   }
 }
 
-.song-progress {
-  width: 100%;
+.player-screen__volume {
   display: flex;
-  align-items: center;
-  padding: 30px 6px 0;
-  margin: 0 auto;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
 
-  &__time {
-    display: inline-block;
-    font-size: 8px;
-    line-height: 12px;
-    color: var(--color-text);
-  }
-
-  &__bar {
-    border-radius: 6px;
-    height: 4px;
-    width: 100%;
-    margin: 0 8px;
-    overflow: hidden;
-    background-color: var(--color-surface-soft);
-
-    &-fill {
-      display: block;
-      position: relative;
-      width: 0;
-      height: 100%;
-      background-color: var(--color-primary);
-      border-radius: 6px;
-    }
-  }
+.player-screen__volume-label {
+  font-size: 12px;
+  color: var(--color-text-muted);
 }
 
 .volume-slider {

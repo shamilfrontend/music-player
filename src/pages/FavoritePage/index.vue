@@ -1,40 +1,47 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
+import TrackItem from '../../components/TrackItem/index.vue';
+
 import { useTracksStore } from '../../store';
 import { usePageLayout } from '../../composables/usePageLayout';
 import UiCard from '../../ui/UiCard.vue';
 import UiEmptyState from '../../ui/UiEmptyState.vue';
 
-defineOptions({ name: 'FavoritePagePage' });
+defineOptions({ name: 'FavoritePage' });
 
 const tracksStore = useTracksStore();
 const { pageClassName } = usePageLayout('favorite-page');
 
-const favoriteCount = computed(() => tracksStore.favoriteTracks.length);
+const favoriteTracks = computed(() => tracksStore.favoriteTracks);
 </script>
 
 <template>
   <div :class="pageClassName">
     <div class="page-heading">
-      <span class="page-heading__eyebrow">Favorites</span>
+      <span class="page-heading__eyebrow">Избранное</span>
       <h1 class="page-heading__title">Избранные треки</h1>
       <p class="page-heading__description">
-        В этом разделе собираются композиции, к которым пользователь возвращается чаще всего.
+        Композиции, к которым вы возвращаетесь чаще всего — быстрый запуск и тот же плеер, что в библиотеке.
       </p>
     </div>
 
-    <ui-card class="favorite-page__card" elevated>
+    <ui-card class="favorite-page__list" :padded="false" elevated>
       <ui-empty-state
-        v-if="!favoriteCount"
+        v-if="!favoriteTracks.length"
+        class="favorite-page__empty"
         icon="fa-heart-o"
         title="Избранное пока пусто"
-        description="Добавьте любимые треки в коллекцию, и они появятся на отдельном экране."
+        description="Отметьте треки сердечком в списке на главной — они появятся здесь."
       />
 
-      <div v-else class="favorite-page__summary">
-        В коллекции уже {{ favoriteCount }} избранных трек(ов).
-      </div>
+      <track-item
+        v-for="track in favoriteTracks"
+        v-else
+        :key="track.id"
+        :track="track"
+        class="favorite-page__track"
+      />
     </ui-card>
   </div>
 </template>
@@ -43,16 +50,20 @@ const favoriteCount = computed(() => tracksStore.favoriteTracks.length);
 .favorite-page {
   padding-top: var(--space-6);
 
-  &__card {
-    min-height: 280px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  &__list {
+    overflow: hidden;
   }
 
-  &__summary {
-    font-size: 15px;
-    color: var(--color-text-muted);
+  &__empty {
+    padding: var(--space-8);
+  }
+
+  &__track {
+    border-bottom: 1px solid var(--color-border);
+
+    &:last-of-type {
+      border-bottom: none;
+    }
   }
 }
 </style>

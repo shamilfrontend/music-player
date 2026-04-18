@@ -22,8 +22,8 @@ const layoutComponent = computed<Component>(() =>
 </template>
 
 <style lang="scss">
-@import "./assets/styles/base";
-@import "./assets/styles/keyframes";
+@use "./assets/styles/base.scss" as *;
+@use "./assets/styles/keyframes.scss" as *;
 
 .page-shell {
   display: flex;
@@ -64,5 +64,15 @@ const layoutComponent = computed<Component>(() =>
   font-size: 14px;
   line-height: 1.6;
   color: var(--color-text-muted);
+}
+
+@media (max-width: 520px) {
+  .page-heading__title {
+    font-size: 22px;
+  }
+
+  .page-heading__description {
+    font-size: 13px;
+  }
 }
 </style>

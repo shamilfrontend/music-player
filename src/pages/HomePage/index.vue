@@ -19,7 +19,7 @@ const tracks = computed(() => tracksStore.tracks);
 <template>
   <div :class="pageClassName">
     <div class="page-heading">
-      <span class="page-heading__eyebrow">Library</span>
+      <span class="page-heading__eyebrow">Библиотека</span>
       <h1 class="page-heading__title">Сейчас в коллекции</h1>
       <p class="page-heading__description">
         Основной каталог треков с быстрым запуском воспроизведения и переходом в полноэкранный плеер.

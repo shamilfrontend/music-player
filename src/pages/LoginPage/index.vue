@@ -37,7 +37,7 @@ const onSubmit = async (): Promise<void> => {
     <div class="login-page__content">
       <ui-card class="login-page__card" elevated>
         <div class="page-heading">
-          <span class="page-heading__eyebrow">Music Player</span>
+          <span class="page-heading__eyebrow">Вход</span>
           <h1 class="page-heading__title">Вход в приложение</h1>
           <p class="page-heading__description">
             Авторизуйтесь, чтобы открыть библиотеку, избранное и управление треками.

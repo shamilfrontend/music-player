@@ -21,13 +21,7 @@ const handleWrapperClick = (): void => {
 };
 
 const toggleTrack = (): void => {
-  // if (isPlaying.value) {
-  //   audio.value?.pause();
-  // } else {
-  //   audio.value?.play();
-  // }
-  //
-  // tracksStore.state.isPlaying = !isPlaying.value;
+  tracksStore.state.isPlaying = !isPlaying.value;
 };
 
 const handleTimeUpdate = () => {
@@ -83,7 +77,7 @@ watch(() => tracksStore.volume, () => {
     <div class="player-mini__content">
       <img
         :src="currentTrack?.imageUrl"
-        alt="song"
+        :alt="currentTrack?.name ? `Обложка: ${currentTrack.name}` : 'Обложка трека'"
         class="player-mini__image"
       />
 
@@ -98,6 +92,8 @@ watch(() => tracksStore.volume, () => {
         <button
           v-if="isLoading"
           type="button"
+          aria-label="Загрузка трека"
+          @click.stop
         >
           <i
             class="player-mini__icon player-mini__icon-loading fa fa-spinner"
@@ -108,6 +104,7 @@ watch(() => tracksStore.volume, () => {
         <button
           v-else
           type="button"
+          :aria-label="isPlaying ? 'Пауза' : 'Воспроизведение'"
           @click.stop="toggleTrack"
         >
           <i

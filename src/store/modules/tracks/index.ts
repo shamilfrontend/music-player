@@ -24,6 +24,14 @@ const useTracksStore = defineStore('tracks', () => {
     tracks.value.filter(({ favorite }) => Boolean(favorite))
   );
 
+  function toggleFavorite(trackId: Track['id']): void {
+    const track = tracks.value.find(({ id }) => id === trackId);
+
+    if (!track) return;
+
+    track.favorite = !track.favorite;
+  }
+
   return {
     tracks,
     currentTrack,
@@ -31,7 +39,8 @@ const useTracksStore = defineStore('tracks', () => {
     durationSeconds,
     volume,
     state,
-    favoriteTracks
+    favoriteTracks,
+    toggleFavorite
   };
 });
 

@@ -19,7 +19,7 @@ function goHome(): void {
 <template>
   <div :class="pageClassName">
     <div class="page-heading">
-      <span class="page-heading__eyebrow">Upload</span>
+      <span class="page-heading__eyebrow">Загрузка</span>
       <h1 class="page-heading__title">Добавление треков</h1>
       <p class="page-heading__description">
         Экран подготовлен под будущий сценарий загрузки, поэтому здесь уже есть финальное пустое состояние.

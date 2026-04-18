@@ -16,19 +16,22 @@ const currentTrack = computed(() => tracksStore.currentTrack);
 </script>
 
 <template>
-  <div class="base-layout">
+  <div
+    class="base-layout"
+    :class="{ 'base-layout--no-mini': !currentTrack }"
+  >
     <div class="base-layout__inner">
       <the-header />
 
       <main class="base-layout__content">
         <slot />
       </main>
+    </div>
 
-      <div class="base-layout__footer">
-        <player-mini v-show="currentTrack" />
+    <div class="base-layout__footer">
+      <player-mini v-show="currentTrack" />
 
-        <the-footer />
-      </div>
+      <the-footer />
     </div>
 
     <player-screen />
@@ -37,17 +40,16 @@ const currentTrack = computed(() => tracksStore.currentTrack);
 
 <style lang="scss" scoped>
 .base-layout {
-  min-height: 100vh;
-  padding: var(--space-4);
+  height: 100vh;
+  height: 100dvh;
 
   &__inner {
     display: flex;
     flex-direction: column;
     max-width: var(--page-max-width);
-    min-height: calc(100vh - (var(--space-4) * 2));
+    min-height: 100vh;
+    min-height: 100dvh;
     margin: 0 auto;
-    border: 1px solid var(--color-border);
-    border-radius: 32px;
     background:
       linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent),
       rgba(8, 17, 31, 0.9);
@@ -57,16 +59,32 @@ const currentTrack = computed(() => tracksStore.currentTrack);
   }
 
   &__content {
-    flex: 1;
+    flex: 1 1 auto;
+    min-height: 0;
     padding: 0 var(--page-padding) var(--page-padding);
+    padding-bottom: calc(
+      var(--player-menu-height) + var(--space-3) + var(--space-4) + var(--player-mini-height) +
+        var(--space-3) * 2 + env(safe-area-inset-bottom, 0)
+    );
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 22%);
+
+    .base-layout--no-mini & {
+      padding-bottom: calc(
+        var(--player-menu-height) + var(--space-3) + var(--space-4) + env(safe-area-inset-bottom, 0)
+      );
+    }
   }
 
   &__footer {
-    position: sticky;
+    position: fixed;
     bottom: 0;
+    left: 50%;
     z-index: 1;
+    width: min(100%, var(--page-max-width));
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    translate: -50% 0;
     background:
       linear-gradient(180deg, rgba(8, 17, 31, 0), rgba(8, 17, 31, 0.92) 32%),
       rgba(8, 17, 31, 0.92);

@@ -9,20 +9,30 @@ const route = useRoute();
 
 const pageMeta = computed<{ title: string; description: string }>(() => {
   switch (route.name) {
+    case 'HOME':
+      return {
+        title: 'Главная',
+        description: 'Библиотека и воспроизведение'
+      };
     case 'FAVORITE':
       return {
         title: 'Избранное',
-        description: 'Быстрый доступ к сохранённым трекам'
+        description: 'Сохранённые треки'
       };
     case 'ADD_TRACK':
       return {
         title: 'Добавить трек',
-        description: 'Подготовленный экран будущей загрузки'
+        description: 'Загрузка новых композиций'
+      };
+    case 'LOGIN':
+      return {
+        title: 'Вход',
+        description: 'Авторизация в приложении'
       };
     default:
       return {
         title: 'Music player',
-        description: 'Современный интерфейс прослушивания'
+        description: 'Прослушивание музыки'
       };
   }
 });

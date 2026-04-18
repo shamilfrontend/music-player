@@ -57,6 +57,10 @@ const handleTrackClick = (): void => {
 const handlePlayPauseBtnClick = (): void => {
   tracksStore.state.isPlaying = !isPlaying.value;
 };
+
+const handleFavoriteBtnClick = (): void => {
+  tracksStore.toggleFavorite(props.track.id);
+};
 </script>
 
 <template>
@@ -89,9 +93,10 @@ const handlePlayPauseBtnClick = (): void => {
 
       <template v-else>
         <button
-          v-if="0"
           type="button"
           class="track-item__btn"
+          :aria-label="track.favorite ? 'Убрать из избранного' : 'Добавить в избранное'"
+          @click.stop="handleFavoriteBtnClick"
         >
           <i
             class="track-item__icon fa"
@@ -102,6 +107,7 @@ const handlePlayPauseBtnClick = (): void => {
         <button
           type="button"
           class="track-item__btn"
+          :aria-label="isPlaying && currentTrack?.id === track.id ? 'Пауза' : 'Воспроизведение'"
           @click.stop="handlePlayPauseBtnClick"
         >
           <i
@@ -123,7 +129,7 @@ const handlePlayPauseBtnClick = (): void => {
   padding: var(--space-4) var(--space-5);
   cursor: pointer;
   transition: all 0.2s ease-in;
-  overflow: auto;
+  overflow: hidden;
   user-select: none;
 
   &:hover {

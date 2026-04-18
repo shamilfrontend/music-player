@@ -7,17 +7,17 @@ defineOptions({ name: 'TheFooter' });
 
 const MENU_LIST = [
   {
-    link: '/',
-    icon: 'fa-bars',
+    routeName: 'HOME' as const,
+    icon: 'fa-home',
     label: 'Главная'
   },
   {
-    link: '/favorite',
+    routeName: 'FAVORITE' as const,
     icon: 'fa-heart',
     label: 'Избранное'
   },
   {
-    link: '/add',
+    routeName: 'ADD_TRACK' as const,
     icon: 'fa-plus',
     label: 'Добавить'
   },
@@ -36,8 +36,8 @@ const handleLogoutClick = (): void => {
   <nav class="the-footer" aria-label="Основная навигация">
     <router-link
       v-for="menuItem in MENU_LIST"
-      :key="menuItem.link"
-      :to="menuItem.link"
+      :key="menuItem.routeName"
+      :to="{ name: menuItem.routeName }"
       class="the-footer__btn"
     >
       <i :class="`fa ${menuItem.icon} fa-lg`" />
@@ -47,6 +47,7 @@ const handleLogoutClick = (): void => {
     <button
       type="button"
       class="the-footer__btn"
+      aria-label="Выйти из аккаунта"
       @click="handleLogoutClick"
     >
       <i class="fa fa-sign-out fa-lg" />

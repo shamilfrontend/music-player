@@ -3,7 +3,7 @@ import { computed } from 'vue';
 
 import { useTracksStore } from '../../../store';
 
-defineOptions({ name: 'PlayerEquilizer' });
+defineOptions({ name: 'PlayerEqualizer' });
 
 const tracksStore = useTracksStore();
 
@@ -11,7 +11,7 @@ const isPlaying = computed<boolean>(() => tracksStore.state.isPlaying);
 </script>
 
 <template>
-  <svg xmlns="http://www.w3.org/2000/svg" class="equilizer">
+  <svg xmlns="http://www.w3.org/2000/svg" class="equalizer">
     <g v-if="isPlaying">
       <rect
         v-for="i in 12"
@@ -25,7 +25,7 @@ const isPlaying = computed<boolean>(() => tracksStore.state.isPlaying);
       <rect
         v-for="i in 12"
         :key="i"
-        fill="var(--secong)"
+        fill="var(--second-color)"
         width="18px"
         height="5"
         :transform="`translate(${i * 22},0)`"
@@ -37,7 +37,7 @@ const isPlaying = computed<boolean>(() => tracksStore.state.isPlaying);
 <style lang="scss" scoped>
 $max: 100px;
 
-.equilizer {
+.equalizer {
   position: absolute;
   bottom: 0;
   right: 0;
@@ -54,7 +54,7 @@ $max: 100px;
 }
 
 .bar {
-  fill: var(--secong);
+  fill: var(--second-color);
   width: 18px;
   animation: equalize 1.25s steps(25, end) 0s infinite;
 }
