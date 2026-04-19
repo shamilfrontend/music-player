@@ -41,6 +41,67 @@ const LOADING_INDICATOR_DELAY_MS = 120;
 
 let loadingIndicatorTimerId: ReturnType<typeof setTimeout> | null = null;
 
+let pendingSeekMetadataCleanup: (() => void) | null = null;
+
+function removePendingSeekMetadataListener(): void {
+  if (pendingSeekMetadataCleanup !== null) {
+    pendingSeekMetadataCleanup();
+    pendingSeekMetadataCleanup = null;
+  }
+}
+
+function canApplySeekToAudio(element: HTMLAudioElement): boolean {
+  return (
+    element.readyState >= HTMLMediaElement.HAVE_METADATA &&
+    Number.isFinite(element.duration) &&
+    element.duration > 0
+  );
+}
+
+/** true — pending пуст или позиция выставлена; false — ждём metadata */
+function tryApplyPendingSeek(): boolean {
+  const { pendingSeekSeconds } = tracksStore;
+
+  if (pendingSeekSeconds === null || pendingSeekSeconds === undefined) {
+    removePendingSeekMetadataListener();
+
+    return true;
+  }
+
+  const element = audio.value;
+
+  if (!element || !canApplySeekToAudio(element)) {
+    return false;
+  }
+
+  element.currentTime = pendingSeekSeconds;
+  tracksStore.currentSeconds = pendingSeekSeconds;
+  tracksStore.pendingSeekSeconds = null;
+  removePendingSeekMetadataListener();
+
+  return true;
+}
+
+function schedulePendingSeekOnLoadedMetadata(): void {
+  const element = audio.value;
+
+  if (!element) {
+    return;
+  }
+
+  removePendingSeekMetadataListener();
+
+  const onLoadedMetadata = (): void => {
+    removePendingSeekMetadataListener();
+    tryApplyPendingSeek();
+  };
+
+  element.addEventListener('loadedmetadata', onLoadedMetadata, { once: true });
+  pendingSeekMetadataCleanup = () => {
+    element.removeEventListener('loadedmetadata', onLoadedMetadata);
+  };
+}
+
 function clearLoadingIndicatorTimer(): void {
   if (loadingIndicatorTimerId !== null) {
     clearTimeout(loadingIndicatorTimerId);
@@ -75,8 +136,17 @@ const handleLoad = (): void => {
   tracksStore.durationSeconds = Number(audio.value.duration);
   tracksStore.state.isLoadingTrack = false;
 
-  audio.value.play();
-  tracksStore.state.isPlaying = true;
+  if (tracksStore.state.isPlaying) {
+    audio.value.play().catch(() => {
+      // автовоспроизведение может быть заблокировано политикой браузера
+    });
+  } else {
+    audio.value.pause();
+  }
+
+  if (!tryApplyPendingSeek()) {
+    schedulePendingSeekOnLoadedMetadata();
+  }
 };
 
 const handleAudioError = (): void => {
@@ -116,6 +186,7 @@ useMediaSession();
 watch(
   () => tracksStore.currentTrack?.trackUrl ?? null,
   (url) => {
+    removePendingSeekMetadataListener();
     clearLoadingIndicatorTimer();
 
     if (!url) {
@@ -130,6 +201,7 @@ watch(
 );
 
 onUnmounted(() => {
+  removePendingSeekMetadataListener();
   clearLoadingIndicatorTimer();
 });
 
@@ -151,23 +223,27 @@ watch(() => tracksStore.volume, () => {
 });
 
 watch(
-  () => tracksStore.pendingSeekSeconds,
-  (seconds) => {
-    if (seconds === null || seconds === undefined) return;
+  [() => tracksStore.pendingSeekSeconds, audio],
+  () => {
+    const { pendingSeekSeconds } = tracksStore;
 
-    const element = audio.value;
-
-    if (!element) {
-      tracksStore.pendingSeekSeconds = null;
+    if (pendingSeekSeconds === null || pendingSeekSeconds === undefined) {
+      removePendingSeekMetadataListener();
 
       return;
     }
 
-    element.currentTime = seconds;
-    tracksStore.currentSeconds = seconds;
-    tracksStore.pendingSeekSeconds = null;
+    if (tryApplyPendingSeek()) {
+      return;
+    }
+
+    schedulePendingSeekOnLoadedMetadata();
   }
 );
+
+const handleLoadedMetadata = (): void => {
+  tryApplyPendingSeek();
+};
 </script>
 
 <template>
@@ -228,6 +304,7 @@ watch(
       preload="auto"
       @timeupdate="handleTimeUpdate"
       @loadeddata="handleLoad"
+      @loadedmetadata="handleLoadedMetadata"
       @ended="handleEnded"
       @error="handleAudioError"
       @volumechange="handleVolumeChange"

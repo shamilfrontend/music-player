@@ -5,6 +5,7 @@ import { usePlayerScreenGestures } from '../../composables/usePlayerScreenGestur
 import { useProgressBarSeek } from '../../composables/useProgressBarSeek';
 import type { Nullable } from '../../types';
 
+import { SEEK_STEP_SECONDS } from '../../constants/player';
 import { useTracksStore } from '../../store';
 
 function convertTimeHHMMSS(value: number): string {
@@ -14,8 +15,6 @@ function convertTimeHHMMSS(value: number): string {
 }
 
 defineOptions({ name: 'PlayerScreen' });
-
-const SEEK_STEP_SECONDS = 8;
 
 const tracksStore = useTracksStore();
 
