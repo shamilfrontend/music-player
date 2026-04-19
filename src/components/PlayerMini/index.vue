@@ -40,7 +40,6 @@ const handleLoad = (): void => {
   if (!audio.value) return;
 
   if (audio.value.readyState >= 2) {
-    tracksStore.state.isLooping = true;
     tracksStore.durationSeconds = Number(audio.value.duration);
 
     audio.value.play();

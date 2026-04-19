@@ -21,6 +21,7 @@ export interface TracksState {
   state: {
     isPlaying: boolean;
     isLooping: boolean;
+    isShuffle: boolean;
     isPlayerScreenShown: boolean;
     isLoadingTrack: boolean;
   };

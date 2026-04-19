@@ -25,7 +25,13 @@ const isPlaying = computed<boolean>(() => tracksStore.state.isPlaying);
 
 const currentTrack = computed(() => tracksStore.currentTrack);
 
+const hasTracks = computed<boolean>(() => tracksStore.tracks.length > 0);
+
 const isLoading = computed<boolean>(() => tracksStore.state.isLoadingTrack);
+
+const isLooping = computed<boolean>(() => tracksStore.state.isLooping);
+
+const isShuffle = computed<boolean>(() => tracksStore.state.isShuffle);
 
 const volume = computed<number>(() => tracksStore.volume);
 
@@ -69,6 +75,22 @@ const handlePlayBtnClick = (): void => {
   tracksStore.state.isPlaying = !isPlaying.value;
 };
 
+const handlePrevClick = (): void => {
+  tracksStore.playPreviousTrack();
+};
+
+const handleNextClick = (): void => {
+  tracksStore.playNextTrack();
+};
+
+const handleLoopClick = (): void => {
+  tracksStore.toggleLoop();
+};
+
+const handleShuffleClick = (): void => {
+  tracksStore.toggleShuffle();
+};
+
 const handleVolumeInput = (event: Event): void => {
   const { value } = event.target as HTMLInputElement;
   tracksStore.volume = Number(value);
@@ -88,9 +110,9 @@ usePlayerScreenGestures({
   onSwipeDownClose: closePlayerScreen,
   onHorizontalSwipe: (direction) => {
     if (direction === 'left') {
-      tracksStore.playAdjacentTrack(1);
+      tracksStore.playNextTrack();
     } else {
-      tracksStore.playAdjacentTrack(-1);
+      tracksStore.playPreviousTrack();
     }
   }
 });
@@ -198,8 +220,31 @@ onUnmounted(() => {
           <template v-else>
             <button
               type="button"
+              class="music-controls__btn"
+              :class="{ 'music-controls__btn_active': isLooping }"
+              aria-label="Повтор трека"
+              :aria-pressed="isLooping"
+              :disabled="!hasTracks"
+              @click="handleLoopClick"
+            >
+              <i class="fa fa-repeat" aria-hidden="true" />
+            </button>
+
+            <button
+              type="button"
+              class="music-controls__btn"
+              aria-label="Предыдущий трек"
+              :disabled="!hasTracks"
+              @click="handlePrevClick"
+            >
+              <i class="fa fa-step-backward" aria-hidden="true" />
+            </button>
+
+            <button
+              type="button"
               class="music-controls__play-pause"
               :aria-label="isPlaying ? 'Пауза' : 'Воспроизведение'"
+              :disabled="!currentTrack"
               @click="handlePlayBtnClick"
             >
               <i
@@ -207,6 +252,28 @@ onUnmounted(() => {
                 :class="isPlaying ? 'fa-pause' : 'fa-play'"
                 aria-hidden="true"
               />
+            </button>
+
+            <button
+              type="button"
+              class="music-controls__btn"
+              aria-label="Следующий трек"
+              :disabled="!hasTracks"
+              @click="handleNextClick"
+            >
+              <i class="fa fa-step-forward" aria-hidden="true" />
+            </button>
+
+            <button
+              type="button"
+              class="music-controls__btn"
+              :class="{ 'music-controls__btn_active': isShuffle }"
+              aria-label="Случайный порядок"
+              :aria-pressed="isShuffle"
+              :disabled="!hasTracks"
+              @click="handleShuffleClick"
+            >
+              <i class="fa fa-random" aria-hidden="true" />
             </button>
           </template>
         </div>
@@ -352,9 +419,11 @@ onUnmounted(() => {
 
 .music-controls {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  column-gap: 20px;
+  column-gap: 12px;
+  row-gap: 8px;
   width: 100%;
 
   &__btn {
@@ -364,10 +433,17 @@ onUnmounted(() => {
     border-radius: 12px;
     background-color: var(--color-surface-elevated);
     border: 1px solid var(--color-border);
+    transition: color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
+    }
+
+    &_active {
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 1px rgba(91, 140, 255, 0.35);
     }
 
     i {
@@ -392,6 +468,11 @@ onUnmounted(() => {
     border-radius: 18px;
     background: linear-gradient(135deg, var(--color-primary), var(--color-primary-strong));
     box-shadow: var(--shadow-md);
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   }
 }
 

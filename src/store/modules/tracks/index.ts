@@ -55,6 +55,7 @@ const useTracksStore = defineStore('tracks', () => {
   const state = reactive({
     isPlaying: false,
     isLooping: false,
+    isShuffle: false,
     isPlayerScreenShown: false,
     isLoadingTrack: false
   });
@@ -108,6 +109,51 @@ const useTracksStore = defineStore('tracks', () => {
     state.isPlaying = true;
   }
 
+  function playRandomTrack(): void {
+    const list = tracks.value;
+
+    if (list.length === 0) return;
+
+    const current = currentTrack.value;
+    let candidates = current
+      ? list.filter((t) => t.id !== current.id)
+      : [...list];
+
+    if (candidates.length === 0) {
+      candidates = [...list];
+    }
+
+    const pick = candidates[Math.floor(Math.random() * candidates.length)];
+
+    if (!pick) return;
+
+    currentTrack.value = pick;
+    pendingSeekSeconds.value = null;
+    state.isPlaying = true;
+  }
+
+  function playNextTrack(): void {
+    if (state.isShuffle && tracks.value.length > 1) {
+      playRandomTrack();
+
+      return;
+    }
+
+    playAdjacentTrack(1);
+  }
+
+  function playPreviousTrack(): void {
+    playAdjacentTrack(-1);
+  }
+
+  function toggleLoop(): void {
+    state.isLooping = !state.isLooping;
+  }
+
+  function toggleShuffle(): void {
+    state.isShuffle = !state.isShuffle;
+  }
+
   watch(volume, (value) => {
     writeStoredVolume(value);
   });
@@ -123,7 +169,12 @@ const useTracksStore = defineStore('tracks', () => {
     favoriteTracks,
     toggleFavorite,
     seekToSeconds,
-    playAdjacentTrack
+    playAdjacentTrack,
+    playNextTrack,
+    playPreviousTrack,
+    playRandomTrack,
+    toggleLoop,
+    toggleShuffle
   };
 });
 
