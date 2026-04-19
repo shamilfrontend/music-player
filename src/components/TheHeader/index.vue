@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router'
 
-import { useRoute } from 'vue-router';
+import { useAuthStore } from '../../store'
 
 defineOptions({ name: 'TheHeader' });
 
@@ -36,6 +37,14 @@ const pageMeta = computed<{ title: string; description: string }>(() => {
       };
   }
 });
+
+const router = useRouter();
+const authStore = useAuthStore();
+
+const handleLogoutClick = (): void => {
+  authStore.logout();
+  router.push({ name: 'LOGIN' });
+};
 </script>
 
 <template>
@@ -49,6 +58,15 @@ const pageMeta = computed<{ title: string; description: string }>(() => {
         <div class="the-header__title">{{ pageMeta.title }}</div>
         <div class="the-header__description">{{ pageMeta.description }}</div>
       </div>
+
+      <button
+        type="button"
+        class="the-header__btn"
+        aria-label="Выйти из аккаунта"
+        @click="handleLogoutClick"
+      >
+        <i class="fa fa-sign-out fa-lg" />
+      </button>
     </div>
   </header>
 </template>
@@ -65,7 +83,7 @@ const pageMeta = computed<{ title: string; description: string }>(() => {
 
   &__brand {
     display: grid;
-    grid-template-columns: var(--size-icon) 1fr;
+    grid-template-columns: var(--size-icon) 1fr var(--size-icon);
     align-items: center;
     gap: var(--space-4);
   }
@@ -100,6 +118,10 @@ const pageMeta = computed<{ title: string; description: string }>(() => {
     margin-top: var(--space-1);
     color: var(--color-text-muted);
     font-size: 13px;
+  }
+
+  &__btn {
+    //
   }
 }
 </style>

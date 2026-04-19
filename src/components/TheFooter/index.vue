@@ -1,8 +1,4 @@
 <script lang="ts" setup>
-import { useRouter } from 'vue-router';
-
-import { useAuthStore } from '../../store';
-
 defineOptions({ name: 'TheFooter' });
 
 const MENU_LIST = [
@@ -22,14 +18,6 @@ const MENU_LIST = [
     label: 'Добавить'
   },
 ];
-
-const router = useRouter();
-const authStore = useAuthStore();
-
-const handleLogoutClick = (): void => {
-  authStore.logout();
-  router.push({ name: 'LOGIN' });
-};
 </script>
 
 <template>
@@ -43,16 +31,6 @@ const handleLogoutClick = (): void => {
       <i :class="`fa ${menuItem.icon} fa-lg`" />
       <span>{{ menuItem.label }}</span>
     </router-link>
-
-    <button
-      type="button"
-      class="the-footer__btn"
-      aria-label="Выйти из аккаунта"
-      @click="handleLogoutClick"
-    >
-      <i class="fa fa-sign-out fa-lg" />
-      <span>Выход</span>
-    </button>
   </nav>
 </template>
 

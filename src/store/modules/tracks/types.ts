@@ -7,6 +7,8 @@ export interface Track {
   author: string;
   favorite: boolean;
   trackUrl: string;
+  /** Локально добавленный файл (не из встроенной библиотеки) */
+  source?: 'user';
 }
 
 export interface TracksState {

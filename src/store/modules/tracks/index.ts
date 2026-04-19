@@ -1,5 +1,6 @@
 import { computed, reactive, ref, watch } from 'vue';
 
+import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
 
 import { tracks as tracksList } from './constants';
@@ -10,6 +11,68 @@ const VOLUME_STORAGE_KEY = 'music-player-volume';
 const LOOP_STORAGE_KEY = 'music-player-loop';
 const SHUFFLE_STORAGE_KEY = 'music-player-shuffle';
 const LAST_TRACK_ID_STORAGE_KEY = 'music-player-last-track-id';
+const FAVORITE_IDS_STORAGE_KEY = 'music-player-favorite-ids';
+const USER_TRACKS_STORAGE_KEY = 'music-player-user-tracks';
+const MAX_USER_AUDIO_FILE_BYTES = 2_500_000;
+const DEFAULT_USER_COVER = '/albums/kleinod_another_ight.jpg';
+
+function defaultFavoriteIdsFromTracks(seedTracks: Track[]): Set<string> {
+  return new Set(
+    seedTracks.filter(({ favorite }) => favorite).map(({ id }) => String(id))
+  );
+}
+
+function readFavoriteIdSet(seedTracks: Track[]): Set<string> {
+  if (typeof window === 'undefined') {
+    return defaultFavoriteIdsFromTracks(seedTracks);
+  }
+
+  try {
+    const raw = window.localStorage.getItem(FAVORITE_IDS_STORAGE_KEY);
+
+    if (raw === null) {
+      return defaultFavoriteIdsFromTracks(seedTracks);
+    }
+
+    const parsed = JSON.parse(raw) as unknown;
+
+    if (!Array.isArray(parsed)) {
+      return defaultFavoriteIdsFromTracks(seedTracks);
+    }
+
+    return new Set(parsed.map(id => String(id)).filter(id => id.length > 0));
+  } catch {
+    return defaultFavoriteIdsFromTracks(seedTracks);
+  }
+}
+
+function writeFavoriteIdsForTracks(list: Track[]): void {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  try {
+    const ids = list
+      .filter(({ favorite }) => favorite)
+      .map(({ id }) => String(id));
+
+    window.localStorage.setItem(FAVORITE_IDS_STORAGE_KEY, JSON.stringify(ids));
+  } catch {
+    // квота / приватный режим
+  }
+}
+
+function applyPersistedFavoriteFlags(list: Track[]): void {
+  const ids = readFavoriteIdSet(list);
+
+  for (let i = 0; i < list.length; i += 1) {
+    const item = list[i];
+
+    if (item) {
+      item.favorite = ids.has(String(item.id));
+    }
+  }
+}
 
 function readStoredBoolean(key: string, defaultValue: boolean): boolean {
   if (typeof window === 'undefined') {
@@ -111,8 +174,122 @@ function writeStoredVolume(value: number): void {
   }
 }
 
+function isUserTrackRecord(v: unknown): v is {
+  id: string | number;
+  name: string;
+  author: string;
+  imageUrl: string;
+  trackUrl: string;
+} {
+  if (v === null || typeof v !== 'object') {
+    return false;
+  }
+
+  const o = v as Record<string, unknown>;
+
+  return (
+    typeof o.trackUrl === 'string' &&
+    o.trackUrl.length > 0 &&
+    (typeof o.id === 'string' || typeof o.id === 'number') &&
+    typeof o.name === 'string' &&
+    typeof o.author === 'string' &&
+    typeof o.imageUrl === 'string'
+  );
+}
+
+function loadUserTracksFromStorage(): Track[] {
+  if (typeof window === 'undefined') {
+    return [];
+  }
+
+  try {
+    const raw = window.localStorage.getItem(USER_TRACKS_STORAGE_KEY);
+
+    if (raw === null || raw === '') {
+      return [];
+    }
+
+    const parsed = JSON.parse(raw) as unknown;
+
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
+
+    const out: Track[] = [];
+
+    for (let i = 0; i < parsed.length; i += 1) {
+      const row = parsed[i];
+
+      if (isUserTrackRecord(row)) {
+        out.push({
+          id: row.id,
+          name: row.name,
+          author: row.author,
+          imageUrl: row.imageUrl || DEFAULT_USER_COVER,
+          trackUrl: row.trackUrl,
+          favorite: false,
+          source: 'user'
+        });
+      }
+    }
+
+    return out;
+  } catch {
+    return [];
+  }
+}
+
+function saveUserTracksToStorage(list: Track[]): boolean {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+
+  const rows = list
+    .filter((t): t is Track & { source: 'user' } => t.source === 'user')
+    .map(({ id, name, author, imageUrl, trackUrl }) => ({
+      id,
+      name,
+      author,
+      imageUrl,
+      trackUrl,
+      source: 'user' as const
+    }));
+
+  try {
+    window.localStorage.setItem(USER_TRACKS_STORAGE_KEY, JSON.stringify(rows));
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function readFileAsDataUrl(file: File): Promise<string | null> {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+
+    reader.onload = (): void => {
+      const { result } = reader;
+
+      resolve(typeof result === 'string' ? result : null);
+    };
+
+    reader.onerror = (): void => resolve(null);
+    reader.readAsDataURL(file);
+  });
+}
+
+export type AddUserTrackResult =
+  | { ok: true }
+  | { ok: false; reason: 'file_too_large' | 'read_failed' | 'persist_failed' };
+
 const useTracksStore = defineStore('tracks', () => {
-  const tracks = ref<Track[]>(tracksList);
+  const builtInTracks = tracksList.map(item => ({ ...item }));
+  const userTracks = loadUserTracksFromStorage();
+  const tracks = ref<Track[]>([...builtInTracks, ...userTracks]);
+
+  applyPersistedFavoriteFlags(tracks.value);
+
   const currentTrack = ref<Nullable<Track>>(null);
   const currentSeconds = ref(0);
   const durationSeconds = ref(0);
@@ -130,7 +307,9 @@ const useTracksStore = defineStore('tracks', () => {
   const lastTrackIdStored = readLastTrackId();
 
   if (lastTrackIdStored !== null && lastTrackIdStored !== '') {
-    const restored = tracks.value.find(({ id }) => String(id) === lastTrackIdStored);
+    const restored = tracks.value.find(
+      ({ id }) => String(id) === lastTrackIdStored
+    );
 
     if (restored) {
       currentTrack.value = restored;
@@ -147,6 +326,7 @@ const useTracksStore = defineStore('tracks', () => {
     if (!track) return;
 
     track.favorite = !track.favorite;
+    writeFavoriteIdsForTracks(tracks.value);
   }
 
   function seekToSeconds(seconds: number): void {
@@ -193,7 +373,7 @@ const useTracksStore = defineStore('tracks', () => {
 
     const current = currentTrack.value;
     let candidates = current
-      ? list.filter((t) => t.id !== current.id)
+      ? list.filter(t => t.id !== current.id)
       : [...list];
 
     if (candidates.length === 0) {
@@ -231,20 +411,59 @@ const useTracksStore = defineStore('tracks', () => {
     state.isShuffle = !state.isShuffle;
   }
 
-  watch(volume, (value) => {
+  async function addUserTrackFromFile(file: File): Promise<AddUserTrackResult> {
+    if (file.size > MAX_USER_AUDIO_FILE_BYTES) {
+      return { ok: false, reason: 'file_too_large' };
+    }
+
+    const dataUrl = await readFileAsDataUrl(file);
+
+    if (!dataUrl) {
+      return { ok: false, reason: 'read_failed' };
+    }
+
+    const baseName = file.name.replace(/\.[^/.]+$/, '').trim();
+    const name = baseName.length > 0 ? baseName : 'Трек без названия';
+
+    const track: Track = {
+      id: nanoid(),
+      name,
+      author: 'Локальный файл',
+      imageUrl: DEFAULT_USER_COVER,
+      favorite: false,
+      trackUrl: dataUrl,
+      source: 'user'
+    };
+
+    tracks.value.push(track);
+
+    const saved = saveUserTracksToStorage(tracks.value);
+
+    if (!saved) {
+      tracks.value.pop();
+
+      return { ok: false, reason: 'persist_failed' };
+    }
+
+    applyPersistedFavoriteFlags(tracks.value);
+
+    return { ok: true };
+  }
+
+  watch(volume, value => {
     writeStoredVolume(value);
   });
 
   watch(
     () => state.isLooping,
-    (value) => {
+    value => {
       writeStoredBoolean(LOOP_STORAGE_KEY, value);
     }
   );
 
   watch(
     () => state.isShuffle,
-    (value) => {
+    value => {
       writeStoredBoolean(SHUFFLE_STORAGE_KEY, value);
     }
   );
@@ -277,10 +496,11 @@ const useTracksStore = defineStore('tracks', () => {
     playPreviousTrack,
     playRandomTrack,
     toggleLoop,
-    toggleShuffle
+    toggleShuffle,
+    addUserTrackFromFile
   };
 });
 
 export default useTracksStore;
 export { useTracksStore };
-export type { Track };
+export type { Track, AddUserTrackResult };
