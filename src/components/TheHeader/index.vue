@@ -55,6 +55,8 @@ const pageMeta = computed<{ title: string; description: string }>(() => {
 
 <style lang="scss" scoped>
 .the-header {
+  --size-icon: 48px;
+
   align-items: center;
   min-height: var(--header-height);
   padding: var(--space-3) var(--page-padding);
@@ -63,7 +65,7 @@ const pageMeta = computed<{ title: string; description: string }>(() => {
 
   &__brand {
     display: grid;
-    grid-template-columns: 64px 1fr;
+    grid-template-columns: var(--size-icon) 1fr;
     align-items: center;
     gap: var(--space-4);
   }
@@ -72,8 +74,8 @@ const pageMeta = computed<{ title: string; description: string }>(() => {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 64px;
-    height: 64px;
+    min-width: var(--size-icon);
+    height: var(--size-icon);
     border-radius: 18px;
     background: linear-gradient(135deg, var(--color-primary-soft), rgba(127, 92, 255, 0.18));
     color: var(--color-primary);

@@ -37,18 +37,50 @@ const handleVolumeChange = (event: Event) => {
 };
 
 const handleLoad = (): void => {
-  if (!audio.value) return;
+  if (!audio.value) {
+    tracksStore.state.isLoadingTrack = false;
 
-  if (audio.value.readyState >= 2) {
-    tracksStore.durationSeconds = Number(audio.value.duration);
-
-    audio.value.play();
-    tracksStore.state.isPlaying = true;
     return;
   }
 
-  throw new Error('Failed to load sound file.');
+  if (audio.value.readyState < 2) {
+    tracksStore.state.isLoadingTrack = false;
+    tracksStore.state.isPlaying = false;
+
+    return;
+  }
+
+  tracksStore.durationSeconds = Number(audio.value.duration);
+  tracksStore.state.isLoadingTrack = false;
+
+  audio.value.play();
+  tracksStore.state.isPlaying = true;
 };
+
+const handleAudioError = (): void => {
+  tracksStore.state.isLoadingTrack = false;
+  tracksStore.state.isPlaying = false;
+};
+
+const handleEnded = (): void => {
+  if (tracksStore.state.isLooping) return;
+
+  tracksStore.playNextTrack();
+};
+
+watch(
+  () => tracksStore.currentTrack?.trackUrl ?? null,
+  (url) => {
+    if (!url) {
+      tracksStore.state.isLoadingTrack = false;
+
+      return;
+    }
+
+    tracksStore.state.isLoadingTrack = true;
+  },
+  { immediate: true }
+);
 
 watch(() => tracksStore.state.isPlaying, (value: boolean) => {
   if (!audio.value) return;
@@ -142,6 +174,8 @@ watch(
       preload="auto"
       @timeupdate="handleTimeUpdate"
       @loadeddata="handleLoad"
+      @ended="handleEnded"
+      @error="handleAudioError"
       @volumechange="handleVolumeChange"
     />
   </div>

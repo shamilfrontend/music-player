@@ -165,10 +165,10 @@ onUnmounted(() => {
 <template>
   <div
     :class="playerScreenClasses"
-    role="dialog"
-    aria-modal="true"
     :aria-labelledby="dialogLabelledBy"
     :aria-label="dialogAriaLabel"
+    role="dialog"
+    aria-modal="true"
   >
     <div ref="playerBodyRef" class="player-screen__body">
       <div class="player-screen__top">
