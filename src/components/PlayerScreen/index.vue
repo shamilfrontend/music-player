@@ -252,26 +252,19 @@ onUnmounted(() => {
           <p class="player-screen__info-author">{{ currentTrack?.author }}</p>
         </div>
 
-        <div class="music-controls">
-          <button
-            v-if="isLoading"
-            type="button"
-            aria-label="Загрузка трека"
-          >
-            <i
-              class="music-controls__icon music-controls__icon-loading fa fa-spinner"
-              aria-hidden="true"
-            />
-          </button>
-
-          <template v-else>
+        <div
+          class="music-controls"
+          :class="{ 'music-controls_busy': isLoading }"
+          :aria-busy="isLoading"
+        >
+          <div class="music-controls__row">
             <button
               type="button"
               class="music-controls__btn"
               :class="{ 'music-controls__btn_active': isLooping }"
               aria-label="Повтор трека"
               :aria-pressed="isLooping"
-              :disabled="!hasTracks"
+              :disabled="isLoading || !hasTracks"
               @click="handleLoopClick"
             >
               <i class="fa fa-repeat" aria-hidden="true" />
@@ -281,7 +274,7 @@ onUnmounted(() => {
               type="button"
               class="music-controls__btn"
               aria-label="Предыдущий трек"
-              :disabled="!hasTracks"
+              :disabled="isLoading || !hasTracks"
               @click="handlePrevClick"
             >
               <i class="fa fa-step-backward" aria-hidden="true" />
@@ -291,7 +284,7 @@ onUnmounted(() => {
               type="button"
               class="music-controls__play-pause"
               :aria-label="isPlaying ? 'Пауза' : 'Воспроизведение'"
-              :disabled="!currentTrack"
+              :disabled="isLoading || !currentTrack"
               @click="handlePlayBtnClick"
             >
               <i
@@ -305,7 +298,7 @@ onUnmounted(() => {
               type="button"
               class="music-controls__btn"
               aria-label="Следующий трек"
-              :disabled="!hasTracks"
+              :disabled="isLoading || !hasTracks"
               @click="handleNextClick"
             >
               <i class="fa fa-step-forward" aria-hidden="true" />
@@ -317,12 +310,23 @@ onUnmounted(() => {
               :class="{ 'music-controls__btn_active': isShuffle }"
               aria-label="Случайный порядок"
               :aria-pressed="isShuffle"
-              :disabled="!hasTracks"
+              :disabled="isLoading || !hasTracks"
               @click="handleShuffleClick"
             >
               <i class="fa fa-random" aria-hidden="true" />
             </button>
-          </template>
+          </div>
+
+          <div
+            v-if="isLoading"
+            class="music-controls__overlay"
+            aria-hidden="true"
+          >
+            <i
+              class="music-controls__icon music-controls__icon-loading fa fa-spinner"
+              aria-hidden="true"
+            />
+          </div>
         </div>
 
         <label class="player-screen__volume">
@@ -452,15 +456,18 @@ onUnmounted(() => {
   &__info {
     color: var(--color-text);
     text-align: center;
+    min-height: 72px;
 
     &-name {
       margin-bottom: 8px;
       font-weight: 600;
       font-size: 18px;
+      min-height: calc(1.3em * 2);
     }
 
     &-author {
       font-size: 14px;
+      min-height: 1.4em;
     }
   }
 
@@ -471,13 +478,41 @@ onUnmounted(() => {
 }
 
 .music-controls {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  column-gap: 12px;
-  row-gap: 8px;
+  min-height: 68px;
   width: 100%;
+
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    column-gap: 12px;
+    row-gap: 8px;
+    width: 100%;
+    transition: opacity 0.15s ease;
+  }
+
+  &_busy {
+    .music-controls__row {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
 
   &__btn {
     width: 40px;

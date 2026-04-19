@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, nextTick, ref, watch } from 'vue';
+import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
 
 import type { Nullable } from '../../types';
 
@@ -37,7 +37,28 @@ const handleVolumeChange = (event: Event) => {
   tracksStore.volume = value.volume * 100;
 };
 
+const LOADING_INDICATOR_DELAY_MS = 120;
+
+let loadingIndicatorTimerId: ReturnType<typeof setTimeout> | null = null;
+
+function clearLoadingIndicatorTimer(): void {
+  if (loadingIndicatorTimerId !== null) {
+    clearTimeout(loadingIndicatorTimerId);
+    loadingIndicatorTimerId = null;
+  }
+}
+
+function scheduleLoadingIndicator(): void {
+  clearLoadingIndicatorTimer();
+  loadingIndicatorTimerId = setTimeout(() => {
+    loadingIndicatorTimerId = null;
+    tracksStore.state.isLoadingTrack = true;
+  }, LOADING_INDICATOR_DELAY_MS);
+}
+
 const handleLoad = (): void => {
+  clearLoadingIndicatorTimer();
+
   if (!audio.value) {
     tracksStore.state.isLoadingTrack = false;
 
@@ -59,6 +80,7 @@ const handleLoad = (): void => {
 };
 
 const handleAudioError = (): void => {
+  clearLoadingIndicatorTimer();
   tracksStore.state.isLoadingTrack = false;
   tracksStore.state.isPlaying = false;
 };
@@ -94,16 +116,22 @@ useMediaSession();
 watch(
   () => tracksStore.currentTrack?.trackUrl ?? null,
   (url) => {
+    clearLoadingIndicatorTimer();
+
     if (!url) {
       tracksStore.state.isLoadingTrack = false;
 
       return;
     }
 
-    tracksStore.state.isLoadingTrack = true;
+    scheduleLoadingIndicator();
   },
   { immediate: true }
 );
+
+onUnmounted(() => {
+  clearLoadingIndicatorTimer();
+});
 
 watch(() => tracksStore.state.isPlaying, (value: boolean) => {
   if (!audio.value) return;
@@ -161,23 +189,16 @@ watch(
         </div>
       </div>
 
-      <div class="player-mini__buttons">
+      <div
+        class="player-mini__buttons"
+        :class="{ 'player-mini__buttons_loading': isLoading }"
+      >
         <button
-          v-if="isLoading"
           type="button"
-          aria-label="Загрузка трека"
-          @click.stop
-        >
-          <i
-            class="player-mini__icon player-mini__icon-loading fa fa-spinner"
-            aria-hidden="true"
-          />
-        </button>
-
-        <button
-          v-else
-          type="button"
+          class="player-mini__play-btn"
           :aria-label="isPlaying ? 'Пауза' : 'Воспроизведение'"
+          :aria-busy="isLoading"
+          :disabled="isLoading"
           @click.stop="toggleTrack"
         >
           <i
@@ -186,6 +207,16 @@ watch(
             aria-hidden="true"
           />
         </button>
+        <span
+          v-if="isLoading"
+          class="player-mini__loading-overlay"
+          aria-hidden="true"
+        >
+          <i
+            class="player-mini__icon player-mini__icon-loading fa fa-spinner"
+            aria-hidden="true"
+          />
+        </span>
       </div>
     </div>
 
@@ -253,11 +284,42 @@ watch(
   }
 
   &__buttons {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    margin-left: auto;
+
+    &_loading {
+      .player-mini__play-btn {
+        opacity: 0.35;
+      }
+    }
+  }
+
+  &__play-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 50px;
-    margin-left: auto;
+    height: 50px;
+    padding: 0;
+    color: inherit;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+
+  &__loading-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
   }
 
   &__icon {

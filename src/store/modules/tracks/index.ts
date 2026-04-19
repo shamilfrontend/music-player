@@ -251,8 +251,13 @@ const useTracksStore = defineStore('tracks', () => {
 
   watch(
     () => currentTrack.value?.id,
-    (id) => {
-      writeLastTrackId(id === undefined ? null : id);
+    (nextId, prevId) => {
+      writeLastTrackId(nextId === undefined ? null : nextId);
+
+      if (nextId !== prevId) {
+        currentSeconds.value = 0;
+        durationSeconds.value = 0;
+      }
     }
   );
 
