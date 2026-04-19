@@ -2,6 +2,7 @@
 import { computed, nextTick, onMounted, onUnmounted, ref, toRef, watch } from 'vue';
 
 import { usePlayerScreenGestures } from '../../composables/usePlayerScreenGestures';
+import { useProgressBarSeek } from '../../composables/useProgressBarSeek';
 import type { Nullable } from '../../types';
 
 import { useTracksStore } from '../../store';
@@ -13,6 +14,8 @@ function convertTimeHHMMSS(value: number): string {
 }
 
 defineOptions({ name: 'PlayerScreen' });
+
+const SEEK_STEP_SECONDS = 8;
 
 const tracksStore = useTracksStore();
 
@@ -59,17 +62,15 @@ const dialogAriaLabel = computed(() =>
 
 const previousActiveElement = ref<Nullable<Element>>(null);
 
-const handleProgressClick = (event: MouseEvent): void => {
-  const duration = tracksStore.durationSeconds;
+const progressBarSeek = useProgressBarSeek({
+  getDuration: () => tracksStore.durationSeconds,
+  seekToSeconds: (seconds) => {
+    tracksStore.seekToSeconds(seconds);
+  },
+  canSeek: () => Boolean(tracksStore.durationSeconds && tracksStore.currentTrack)
+});
 
-  if (!duration) return;
-
-  const target = event.currentTarget as HTMLElement;
-  const rect = target.getBoundingClientRect();
-  const ratio = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
-
-  tracksStore.seekToSeconds(ratio * duration);
-};
+const isProgressDragging = computed(() => progressBarSeek.isDragging.value);
 
 const handlePlayBtnClick = (): void => {
   tracksStore.state.isPlaying = !isPlaying.value;
@@ -117,9 +118,51 @@ usePlayerScreenGestures({
   }
 });
 
-const handleEscapeKeyDown = (event: KeyboardEvent): void => {
+function isEditableKeyboardTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false;
+
+  if (target.isContentEditable) return true;
+
+  const { tagName } = target;
+
+  return tagName === 'INPUT' || tagName === 'TEXTAREA' || tagName === 'SELECT';
+}
+
+const handlePlayerScreenKeydown = (event: KeyboardEvent): void => {
+  if (!tracksStore.state.isPlayerScreenShown) return;
+
+  if (isEditableKeyboardTarget(event.target)) return;
+
   if (event.key === 'Escape') {
     closePlayerScreen();
+
+    return;
+  }
+
+  if (event.key === ' ' || event.key === 'Spacebar') {
+    event.preventDefault();
+
+    if (tracksStore.currentTrack) {
+      tracksStore.state.isPlaying = !tracksStore.state.isPlaying;
+    }
+
+    return;
+  }
+
+  const duration = tracksStore.durationSeconds;
+
+  if (!duration) return;
+
+  if (event.key === 'ArrowLeft') {
+    event.preventDefault();
+    tracksStore.seekToSeconds(Math.max(0, tracksStore.currentSeconds - SEEK_STEP_SECONDS));
+
+    return;
+  }
+
+  if (event.key === 'ArrowRight') {
+    event.preventDefault();
+    tracksStore.seekToSeconds(Math.min(duration, tracksStore.currentSeconds + SEEK_STEP_SECONDS));
   }
 };
 
@@ -153,11 +196,11 @@ watch(
 );
 
 onMounted(() => {
-  document.addEventListener('keydown', handleEscapeKeyDown);
+  document.addEventListener('keydown', handlePlayerScreenKeydown);
 });
 
 onUnmounted(() => {
-  document.removeEventListener('keydown', handleEscapeKeyDown);
+  document.removeEventListener('keydown', handlePlayerScreenKeydown);
   setBodyScrollLocked(false);
 });
 </script>
@@ -178,8 +221,12 @@ onUnmounted(() => {
 
         <div
           class="player-screen__progress"
+          :class="{ 'player-screen__progress_dragging': isProgressDragging }"
           role="presentation"
-          @click="handleProgressClick"
+          @pointerdown="progressBarSeek.onPointerDown"
+          @pointermove="progressBarSeek.onPointerMove"
+          @pointerup="progressBarSeek.onPointerUp"
+          @pointercancel="progressBarSeek.onPointerCancel"
         >
           <progress
             :value="progressValue"
@@ -362,6 +409,12 @@ onUnmounted(() => {
 
   &__progress {
     cursor: pointer;
+    touch-action: none;
+    user-select: none;
+
+    &_dragging {
+      cursor: grabbing;
+    }
 
     & > progress {
       border: 0;

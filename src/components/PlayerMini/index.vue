@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 
 import type { Nullable } from '../../types';
 
+import { useMediaSession } from '../../composables/useMediaSession';
 import { useTracksStore } from '../../store';
 
 defineOptions({ name: 'PlayerMini' });
@@ -65,8 +66,30 @@ const handleAudioError = (): void => {
 const handleEnded = (): void => {
   if (tracksStore.state.isLooping) return;
 
+  const urlBefore = tracksStore.currentTrack?.trackUrl ?? null;
+
   tracksStore.playNextTrack();
+
+  nextTick(() => {
+    if (!audio.value) return;
+
+    const urlAfter = tracksStore.currentTrack?.trackUrl ?? null;
+
+    if (urlBefore !== null && urlBefore === urlAfter) {
+      audio.value.currentTime = 0;
+
+      if (tracksStore.state.isPlaying) {
+        audio.value.play().catch(() => {
+          // автовоспроизведение может быть заблокировано политикой браузера
+        });
+      }
+    }
+  }).catch(() => {
+    // nextTick
+  });
 };
+
+useMediaSession();
 
 watch(
   () => tracksStore.currentTrack?.trackUrl ?? null,

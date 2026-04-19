@@ -7,6 +7,73 @@ import type { Track } from './types';
 import type { Nullable } from '../../../types';
 
 const VOLUME_STORAGE_KEY = 'music-player-volume';
+const LOOP_STORAGE_KEY = 'music-player-loop';
+const SHUFFLE_STORAGE_KEY = 'music-player-shuffle';
+const LAST_TRACK_ID_STORAGE_KEY = 'music-player-last-track-id';
+
+function readStoredBoolean(key: string, defaultValue: boolean): boolean {
+  if (typeof window === 'undefined') {
+    return defaultValue;
+  }
+
+  try {
+    const raw = window.localStorage.getItem(key);
+
+    if (raw === null) {
+      return defaultValue;
+    }
+
+    if (raw === '1' || raw === 'true') return true;
+
+    if (raw === '0' || raw === 'false') return false;
+  } catch {
+    // ignore
+  }
+
+  return defaultValue;
+}
+
+function writeStoredBoolean(key: string, value: boolean): void {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(key, value ? '1' : '0');
+  } catch {
+    // quota / приватный режим
+  }
+}
+
+function readLastTrackId(): string | null {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  try {
+    return window.localStorage.getItem(LAST_TRACK_ID_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function writeLastTrackId(id: Track['id'] | null): void {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  try {
+    if (id === null || id === undefined) {
+      window.localStorage.removeItem(LAST_TRACK_ID_STORAGE_KEY);
+
+      return;
+    }
+
+    window.localStorage.setItem(LAST_TRACK_ID_STORAGE_KEY, String(id));
+  } catch {
+    // ignore
+  }
+}
 
 function readStoredVolume(): number {
   if (typeof window === 'undefined') {
@@ -54,11 +121,21 @@ const useTracksStore = defineStore('tracks', () => {
 
   const state = reactive({
     isPlaying: false,
-    isLooping: false,
-    isShuffle: false,
+    isLooping: readStoredBoolean(LOOP_STORAGE_KEY, false),
+    isShuffle: readStoredBoolean(SHUFFLE_STORAGE_KEY, false),
     isPlayerScreenShown: false,
     isLoadingTrack: false
   });
+
+  const lastTrackIdStored = readLastTrackId();
+
+  if (lastTrackIdStored !== null && lastTrackIdStored !== '') {
+    const restored = tracks.value.find(({ id }) => String(id) === lastTrackIdStored);
+
+    if (restored) {
+      currentTrack.value = restored;
+    }
+  }
 
   const favoriteTracks = computed<Track[]>(() =>
     tracks.value.filter(({ favorite }) => Boolean(favorite))
@@ -157,6 +234,27 @@ const useTracksStore = defineStore('tracks', () => {
   watch(volume, (value) => {
     writeStoredVolume(value);
   });
+
+  watch(
+    () => state.isLooping,
+    (value) => {
+      writeStoredBoolean(LOOP_STORAGE_KEY, value);
+    }
+  );
+
+  watch(
+    () => state.isShuffle,
+    (value) => {
+      writeStoredBoolean(SHUFFLE_STORAGE_KEY, value);
+    }
+  );
+
+  watch(
+    () => currentTrack.value?.id,
+    (id) => {
+      writeLastTrackId(id === undefined ? null : id);
+    }
+  );
 
   return {
     tracks,
