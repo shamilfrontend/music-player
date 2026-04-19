@@ -8,6 +8,11 @@ const MENU_LIST = [
     label: 'Главная'
   },
   {
+    routeName: 'ALL_TRACKS' as const,
+    icon: 'fa-list',
+    label: 'Все треки'
+  },
+  {
     routeName: 'FAVORITE' as const,
     icon: 'fa-heart',
     label: 'Избранное'
