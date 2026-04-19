@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, toRef, watch } from 'vue';
 
+import { usePlayerScreenGestures } from '../../composables/usePlayerScreenGestures';
 import type { Nullable } from '../../types';
 
 import { useTracksStore } from '../../store';
@@ -77,6 +78,23 @@ const closePlayerScreen = (): void => {
   tracksStore.state.isPlayerScreenShown = false;
 };
 
+const playerBodyRef = ref<HTMLElement | null>(null);
+
+const isPlayerGesturesEnabled = toRef(tracksStore.state, 'isPlayerScreenShown');
+
+usePlayerScreenGestures({
+  bodyRef: playerBodyRef,
+  enabled: isPlayerGesturesEnabled,
+  onSwipeDownClose: closePlayerScreen,
+  onHorizontalSwipe: (direction) => {
+    if (direction === 'left') {
+      tracksStore.playAdjacentTrack(1);
+    } else {
+      tracksStore.playAdjacentTrack(-1);
+    }
+  }
+});
+
 const handleEscapeKeyDown = (event: KeyboardEvent): void => {
   if (event.key === 'Escape') {
     closePlayerScreen();
@@ -130,7 +148,7 @@ onUnmounted(() => {
     :aria-labelledby="dialogLabelledBy"
     :aria-label="dialogAriaLabel"
   >
-    <div class="player-screen__body">
+    <div ref="playerBodyRef" class="player-screen__body">
       <div class="player-screen__top">
         <div class="player-screen__cover">
           <img :src="currentTrack?.imageUrl" alt="" />
@@ -262,6 +280,7 @@ onUnmounted(() => {
   &__cover {
     position: relative;
     margin: 0 auto var(--space-4);
+    touch-action: none;
 
     img {
       width: 100%;

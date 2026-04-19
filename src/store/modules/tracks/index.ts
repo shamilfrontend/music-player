@@ -81,6 +81,33 @@ const useTracksStore = defineStore('tracks', () => {
     pendingSeekSeconds.value = clamped;
   }
 
+  function playAdjacentTrack(delta: 1 | -1): void {
+    const list = tracks.value;
+
+    if (list.length === 0) return;
+
+    let index: number;
+
+    const current = currentTrack.value;
+
+    if (!current) {
+      index = delta === 1 ? 0 : list.length - 1;
+    } else {
+      const found = list.findIndex(({ id }) => id === current.id);
+      const base = found < 0 ? 0 : found;
+
+      index = (base + delta + list.length) % list.length;
+    }
+
+    const next = list[index];
+
+    if (!next) return;
+
+    currentTrack.value = next;
+    pendingSeekSeconds.value = null;
+    state.isPlaying = true;
+  }
+
   watch(volume, (value) => {
     writeStoredVolume(value);
   });
@@ -95,7 +122,8 @@ const useTracksStore = defineStore('tracks', () => {
     state,
     favoriteTracks,
     toggleFavorite,
-    seekToSeconds
+    seekToSeconds,
+    playAdjacentTrack
   };
 });
 
