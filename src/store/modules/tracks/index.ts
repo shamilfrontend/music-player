@@ -13,7 +13,10 @@ const SHUFFLE_STORAGE_KEY = 'music-player-shuffle';
 const LAST_TRACK_ID_STORAGE_KEY = 'music-player-last-track-id';
 const FAVORITE_IDS_STORAGE_KEY = 'music-player-favorite-ids';
 const USER_TRACKS_STORAGE_KEY = 'music-player-user-tracks';
+const PLAY_COUNTS_STORAGE_KEY = 'music-player-play-counts';
 const MAX_USER_AUDIO_FILE_BYTES = 2_500_000;
+/** База для монотонного addedAt встроенных треков (последние в списке — «новее») */
+const ADDED_AT_SEED_BASE = 1_700_000_000_000;
 const DEFAULT_USER_COVER = '/albums/kleinod_another_ight.jpg';
 
 function defaultFavoriteIdsFromTracks(seedTracks: Track[]): Set<string> {
@@ -174,12 +177,57 @@ function writeStoredVolume(value: number): void {
   }
 }
 
+function readPlayCountsMap(): Record<string, number> {
+  if (typeof window === 'undefined') {
+    return {};
+  }
+
+  try {
+    const raw = window.localStorage.getItem(PLAY_COUNTS_STORAGE_KEY);
+
+    if (raw === null || raw === '') {
+      return {};
+    }
+
+    const parsed = JSON.parse(raw) as unknown;
+
+    if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      return {};
+    }
+
+    const out: Record<string, number> = {};
+
+    Object.entries(parsed as Record<string, unknown>).forEach(([k, v]) => {
+      if (typeof v === 'number' && Number.isFinite(v) && v >= 0) {
+        out[k] = Math.floor(v);
+      }
+    });
+
+    return out;
+  } catch {
+    return {};
+  }
+}
+
+function writePlayCountsMap(map: Record<string, number>): void {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(PLAY_COUNTS_STORAGE_KEY, JSON.stringify(map));
+  } catch {
+    // квота / приватный режим
+  }
+}
+
 function isUserTrackRecord(v: unknown): v is {
   id: string | number;
   name: string;
   author: string;
   imageUrl: string;
   trackUrl: string;
+  addedAt?: number;
 } {
   if (v === null || typeof v !== 'object') {
     return false;
@@ -187,14 +235,25 @@ function isUserTrackRecord(v: unknown): v is {
 
   const o = v as Record<string, unknown>;
 
-  return (
-    typeof o.trackUrl === 'string' &&
-    o.trackUrl.length > 0 &&
-    (typeof o.id === 'string' || typeof o.id === 'number') &&
-    typeof o.name === 'string' &&
-    typeof o.author === 'string' &&
-    typeof o.imageUrl === 'string'
-  );
+  if (
+    typeof o.trackUrl !== 'string' ||
+    o.trackUrl.length === 0 ||
+    (typeof o.id !== 'string' && typeof o.id !== 'number') ||
+    typeof o.name !== 'string' ||
+    typeof o.author !== 'string' ||
+    typeof o.imageUrl !== 'string'
+  ) {
+    return false;
+  }
+
+  if (
+    o.addedAt !== undefined &&
+    (typeof o.addedAt !== 'number' || !Number.isFinite(o.addedAt))
+  ) {
+    return false;
+  }
+
+  return true;
 }
 
 function loadUserTracksFromStorage(): Track[] {
@@ -228,7 +287,8 @@ function loadUserTracksFromStorage(): Track[] {
           imageUrl: row.imageUrl || DEFAULT_USER_COVER,
           trackUrl: row.trackUrl,
           favorite: false,
-          source: 'user'
+          source: 'user',
+          addedAt: row.addedAt ?? 0
         });
       }
     }
@@ -246,13 +306,14 @@ function saveUserTracksToStorage(list: Track[]): boolean {
 
   const rows = list
     .filter((t): t is Track & { source: 'user' } => t.source === 'user')
-    .map(({ id, name, author, imageUrl, trackUrl }) => ({
+    .map(({ id, name, author, imageUrl, trackUrl, addedAt }) => ({
       id,
       name,
       author,
       imageUrl,
       trackUrl,
-      source: 'user' as const
+      source: 'user' as const,
+      addedAt: addedAt ?? 0
     }));
 
   try {
@@ -284,11 +345,16 @@ export type AddUserTrackResult =
   | { ok: false; reason: 'file_too_large' | 'read_failed' | 'persist_failed' };
 
 const useTracksStore = defineStore('tracks', () => {
-  const builtInTracks = tracksList.map(item => ({ ...item }));
+  const builtInTracks = tracksList.map((item, index) => ({
+    ...item,
+    addedAt: ADDED_AT_SEED_BASE + index
+  }));
   const userTracks = loadUserTracksFromStorage();
   const tracks = ref<Track[]>([...builtInTracks, ...userTracks]);
 
   applyPersistedFavoriteFlags(tracks.value);
+
+  const playCounts = ref<Record<string, number>>(readPlayCountsMap());
 
   const currentTrack = ref<Nullable<Track>>(null);
   const currentSeconds = ref(0);
@@ -319,6 +385,59 @@ const useTracksStore = defineStore('tracks', () => {
   const favoriteTracks = computed<Track[]>(() =>
     tracks.value.filter(({ favorite }) => Boolean(favorite))
   );
+
+  function recordPlay(trackId: Track['id']): void {
+    const key = String(trackId);
+    const prev = playCounts.value[key] ?? 0;
+    const next = { ...playCounts.value, [key]: prev + 1 };
+
+    playCounts.value = next;
+    writePlayCountsMap(next);
+  }
+
+  function topTracksByPlays(limit: number): Track[] {
+    const list = tracks.value;
+
+    if (list.length === 0) {
+      return [];
+    }
+
+    const capped = Math.max(1, Math.floor(limit));
+    const allZero = list.every(
+      t => (playCounts.value[String(t.id)] ?? 0) === 0
+    );
+
+    if (allZero) {
+      return list.slice(0, Math.min(capped, list.length));
+    }
+
+    return [...list]
+      .sort((a, b) => {
+        const ca = playCounts.value[String(a.id)] ?? 0;
+        const cb = playCounts.value[String(b.id)] ?? 0;
+
+        if (cb !== ca) {
+          return cb - ca;
+        }
+
+        return String(a.id).localeCompare(String(b.id));
+      })
+      .slice(0, capped);
+  }
+
+  function newestTracks(limit: number): Track[] {
+    const list = tracks.value;
+
+    if (list.length === 0) {
+      return [];
+    }
+
+    const capped = Math.max(1, Math.floor(limit));
+
+    return [...list]
+      .sort((a, b) => (b.addedAt ?? 0) - (a.addedAt ?? 0))
+      .slice(0, Math.min(capped, list.length));
+  }
 
   function toggleFavorite(trackId: Track['id']): void {
     const track = tracks.value.find(({ id }) => id === trackId);
@@ -432,7 +551,8 @@ const useTracksStore = defineStore('tracks', () => {
       imageUrl: DEFAULT_USER_COVER,
       favorite: false,
       trackUrl: dataUrl,
-      source: 'user'
+      source: 'user',
+      addedAt: Date.now()
     };
 
     tracks.value.push(track);
@@ -473,6 +593,14 @@ const useTracksStore = defineStore('tracks', () => {
     (nextId, prevId) => {
       writeLastTrackId(nextId === undefined ? null : nextId);
 
+      if (
+        nextId !== undefined &&
+        nextId !== prevId &&
+        state.isPlaying
+      ) {
+        recordPlay(nextId);
+      }
+
       if (nextId !== prevId) {
         currentSeconds.value = 0;
         durationSeconds.value = 0;
@@ -489,6 +617,9 @@ const useTracksStore = defineStore('tracks', () => {
     pendingSeekSeconds,
     state,
     favoriteTracks,
+    topTracksByPlays,
+    newestTracks,
+    recordPlay,
     toggleFavorite,
     seekToSeconds,
     playAdjacentTrack,

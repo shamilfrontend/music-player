@@ -9,6 +9,8 @@ export interface Track {
   trackUrl: string;
   /** Локально добавленный файл (не из встроенной библиотеки) */
   source?: 'user';
+  /** Время добавления в каталог (Unix ms), для сортировки «новые» */
+  addedAt?: number;
 }
 
 export interface TracksState {
